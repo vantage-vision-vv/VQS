@@ -278,9 +278,11 @@ class videolstm(object):
                 # validation error
                 for i in range(len(val)):
                     Z_pass, y_pass = data.get_data(val[i])
+                    y_ohe = np.zeros(shape=self.actions)
+                    y_ohe[y_pass] = 1
                     loss = sess.run(cost, feed_dict={
                         self.Z: Z_pass,
-                        self.y: y_pass
+                        self.y: y_ohe
                     })
                     epoch_val_loss += loss
                 epoch_val_loss = epoch_val_loss/len(val)
