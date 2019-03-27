@@ -15,7 +15,7 @@ video_label = []
 video_name = []
 
 
-with open("class_label.txt", "w") as fl:
+with open("Data/hmdb51_features/class_label.txt", "w") as fl:
     for i in range(len(classes)):
         fl.write(classes[i]+str(i)+"\n")
 
@@ -85,14 +85,14 @@ for index, item in enumerate(classes):
     print(item + " class completed")
 
 
-with open("frame_number.txt", "w") as fl:
+with open("Data/hmdb51_features/frame_number.txt", "w") as fl:
     for item in frame_numbers:
         fl.write(str(item) + "\n")
 
-with open("video_label.txt", "w") as fl:
+with open("Data/hmdb51_features/video_label.txt", "w") as fl:
     for item in video_label:
         fl.write(str(item) + "\n")
 
-with open("video_name.txt", "w") as fl:
+with open("Data/hmdb51_features/video_name.txt", "w") as fl:
     for item in video_name:
         fl.write(str(item) + "\n")

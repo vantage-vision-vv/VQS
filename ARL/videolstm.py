@@ -26,9 +26,9 @@ class videolstm(object):
         self.feature_out = 512
         self.ctx_in = 512
         self.ctx_out = 512
-        self.atten_kernel = (3,3,512,512)
-        self.atten_transition = (1,1,512,1)
-        self.atten_bias = (1,7,7,512)
+        self.atten_kernel = (3, 3, 512, 512)
+        self.atten_transition = (1, 1, 512, 1)
+        self.atten_bias = (1, 7, 7, 512)
 
         self.actions = 51  # HMDB51
         self.timesteps = 30
@@ -120,13 +120,17 @@ class videolstm(object):
             "b_second_c", shape=self.feature_out, initializer=tf.constant_initializer(value=0))
 
         # attention cnn
-        self.W_inter_xa = tf.get_variable("W_inter_xa", shape=self.atten_kernel, initializer=tf.contrib.layers.xavier_initializer())
-        self.W_inter_ha = tf.get_variable("W_inter_ha", shape=self.atten_kernel, initializer=tf.contrib.layers.xavier_initializer())
-        self.W_inter_z = tf.get_variable("W_inter_z", shape=self.atten_transition, initializer=tf.contrib.layers.xavier_initializer())
-        self.b_inter_a = tf.get_variable("b_inter_a", shape=self.atten_bias, initializer=tf.constant_initializer(value=0))
+        self.W_inter_xa = tf.get_variable(
+            "W_inter_xa", shape=self.atten_kernel, initializer=tf.contrib.layers.xavier_initializer())
+        self.W_inter_ha = tf.get_variable(
+            "W_inter_ha", shape=self.atten_kernel, initializer=tf.contrib.layers.xavier_initializer())
+        self.W_inter_z = tf.get_variable(
+            "W_inter_z", shape=self.atten_transition, initializer=tf.contrib.layers.xavier_initializer())
+        self.b_inter_a = tf.get_variable(
+            "b_inter_a", shape=self.atten_bias, initializer=tf.constant_initializer(value=0))
 
     def clstm_forward(self, prev, inp):
-        H_first_tm1, C_first_tm1, H_second_tm1, C_second_tm1, _ = prev  
+        H_first_tm1, C_first_tm1, H_second_tm1, C_second_tm1, _ = prev
         M_t = inp[:, :, :512]
         X_t = inp[:, :, 512:]
         M_t = tf.reshape(M_t, (1, 7, 7, 512))
@@ -136,29 +140,29 @@ class videolstm(object):
             tf.add(
                 tf.add(
                     tf.add(
-                        conv(M_t, self.W_first_xi, padding='SAME'), conv(H_first_tm1, self.W_first_hi, padding='SAME')),
-                    conv(H_second_tm1, self.W_first_ei, padding='SAME')),
+                        conv(M_t, self.W_first_xi, padding='SAME', strides=[1, 1, 1, 1]), conv(H_first_tm1, self.W_first_hi, padding='SAME', strides=[1, 1, 1, 1])),
+                    conv(H_second_tm1, self.W_first_ei, padding='SAME', strides=[1, 1, 1, 1])),
                 self.b_first_i))
         F_first_t = sig(
             tf.add(
                 tf.add(
                     tf.add(
-                        conv(M_t, self.W_first_xf, padding='SAME'), conv(H_first_tm1, self.W_first_hf, padding='SAME')),
-                    conv(H_second_tm1, self.W_first_ef, padding='SAME')),
+                        conv(M_t, self.W_first_xf, padding='SAME', strides=[1, 1, 1, 1]), conv(H_first_tm1, self.W_first_hf, padding='SAME', strides=[1, 1, 1, 1])),
+                    conv(H_second_tm1, self.W_first_ef, padding='SAME', strides=[1, 1, 1, 1])),
                 self.b_first_f))
         O_first_t = sig(
             tf.add(
                 tf.add(
                     tf.add(
-                        conv(M_t, self.W_first_xo, padding='SAME'), conv(H_first_tm1, self.W_first_ho, padding='SAME')),
-                    conv(H_second_tm1, self.W_first_eo, padding='SAME')),
+                        conv(M_t, self.W_first_xo, padding='SAME', strides=[1, 1, 1, 1]), conv(H_first_tm1, self.W_first_ho, padding='SAME', strides=[1, 1, 1, 1])),
+                    conv(H_second_tm1, self.W_first_eo, padding='SAME', strides=[1, 1, 1, 1])),
                 self.b_first_o))
         G_first_t = tanh(
             tf.add(
                 tf.add(
                     tf.add(
-                        conv(M_t, self.W_first_xc, padding='SAME'), conv(H_first_tm1, self.W_first_hc, padding='SAME')),
-                    conv(H_second_tm1, self.W_first_ec, padding='SAME')),
+                        conv(M_t, self.W_first_xc, padding='SAME', strides=[1, 1, 1, 1]), conv(H_first_tm1, self.W_first_hc, padding='SAME', strides=[1, 1, 1, 1])),
+                    conv(H_second_tm1, self.W_first_ec, padding='SAME', strides=[1, 1, 1, 1])),
                 self.b_first_c))
         C_first_t = tf.add(mul(F_first_t, C_first_tm1),
                            mul(I_first_t, G_first_t))
@@ -169,10 +173,11 @@ class videolstm(object):
             tanh(
                 tf.add(
                     tf.add(
-                        conv(X_t, self.W_inter_xa, padding='SAME'),
-                        conv(H_first_t, self.W_inter_ha, padding='SAME')),
+                        conv(X_t, self.W_inter_xa, padding='SAME',
+                             strides=[1, 1, 1, 1]),
+                        conv(H_first_t, self.W_inter_ha, padding='SAME', strides=[1, 1, 1, 1])),
                     self.b_inter_a)),
-            self.W_inter_z, padding='SAME')
+            self.W_inter_z, padding='SAME', strides=[1, 1, 1, 1])
         A_t = exp(Z_t)/np.sum(exp(Z_t))
         X_tilda_t = mul(A_t, X_t)
 
@@ -180,52 +185,56 @@ class videolstm(object):
         I_second_t = sig(
             tf.add(
                 tf.add(
-                    conv(X_tilda_t, self.W_second_xi, padding='SAME'), conv(H_second_tm1, self.W_second_hi, padding='SAME')),
+                    conv(X_tilda_t, self.W_second_xi, padding='SAME', strides=[1, 1, 1, 1]), conv(H_second_tm1, self.W_second_hi, padding='SAME', strides=[1, 1, 1, 1])),
                 self.b_second_i))
         F_second_t = sig(
             tf.add(
                 tf.add(
-                    conv(X_tilda_t, self.W_second_xf, padding='SAME'), conv(H_second_tm1, self.W_second_hf, padding='SAME')),
+                    conv(X_tilda_t, self.W_second_xf, padding='SAME', strides=[1, 1, 1, 1]), conv(H_second_tm1, self.W_second_hf, padding='SAME', strides=[1, 1, 1, 1])),
                 self.b_second_f))
         O_second_t = sig(
             tf.add(
                 tf.add(
-                    conv(X_tilda_t, self.W_second_xo, padding='SAME'), conv(H_second_tm1, self.W_second_ho, padding='SAME')),
+                    conv(X_tilda_t, self.W_second_xo, padding='SAME', strides=[1, 1, 1, 1]), conv(H_second_tm1, self.W_second_ho, padding='SAME', strides=[1, 1, 1, 1])),
                 self.b_second_o))
         G_second_t = sig(
             tf.add(
                 tf.add(
-                    conv(X_tilda_t, self.W_second_xc, padding='SAME'), conv(H_second_tm1, self.W_second_hc, padding='SAME')),
+                    conv(X_tilda_t, self.W_second_xc, padding='SAME', strides=[1, 1, 1, 1]), conv(H_second_tm1, self.W_second_hc, padding='SAME', strides=[1, 1, 1, 1])),
                 self.b_second_c))
         C_second_t = tf.add(mul(F_second_t, C_second_tm1),
                             mul(I_second_t, G_second_t))
         H_second_t = mul(O_second_t, tanh(C_second_t))
-
         return [H_first_t, C_first_t, H_second_t, C_second_t, A_t]
 
     def forward(self, Z):
         M_t = Z[:, :, :, :512]
         X_t = Z[:, :, :, 512:]
         # CNN_1 initialization for first lstm cell state
-        cnn_1_output = conv(M_t[0:1], self.W_cnn_1, padding="SAME")
+        cnn_1_output = conv(M_t[0:1], self.W_cnn_1,
+                            padding="SAME", strides=[1, 1, 1, 1])
 
         # CNN_2 initialization for first lstm hidden state
-        cnn_2_output = conv(M_t[0:1], self.W_cnn_2, padding="SAME")
+        cnn_2_output = conv(M_t[0:1], self.W_cnn_2,
+                            padding="SAME", strides=[1, 1, 1, 1])
 
         # CNN_3 initialization for second lstm cell state
-        cnn_3_output = conv(X_t[0:1], self.W_cnn_3, padding="SAME")
+        cnn_3_output = conv(X_t[0:1], self.W_cnn_3,
+                            padding="SAME", strides=[1, 1, 1, 1])
 
         # CNN_4 initialization for second lstm hidden state
-        cnn_4_output = conv(X_t[0:1], self.W_cnn_4, padding="SAME")
+        cnn_4_output = conv(X_t[0:1], self.W_cnn_4,
+                            padding="SAME", strides=[1, 1, 1, 1])
 
-        A_temp = tf.get_variable("A_temp", shape=(1,7,7,1), initializer=tf.constant_initializer(value=0))
+        A_temp = tf.get_variable("A_temp", shape=(
+            1, 7, 7, 1), initializer=tf.constant_initializer(value=0))
         initial_states = [cnn_2_output, cnn_1_output,
                           cnn_4_output, cnn_3_output, A_temp]
-        
+
         output_states = tf.scan(
             self.clstm_forward, Z, initializer=initial_states)
 
-        fc_input = tf.reshape(output_states[2], [1,-1])
+        fc_input = tf.reshape(output_states[2][-1], [1, -1])
         temp_1 = tf.layers.dense(fc_input, 1024, activation="tanh")
         temp_2 = tf.layers.dropout(temp_1, rate=0.7)
         out = tf.layers.dense(temp_2, self.actions, activation=None)
@@ -257,10 +266,11 @@ class videolstm(object):
                 # training set
                 for i in range(len(train)):
                     Z_pass, y_pass = data.get_data(train[i])
-                    y_pass = tf.one_hot(y_pass,self.actions)
+                    y_ohe = np.zeros(shape=self.actions)
+                    y_ohe[y_pass] = 1
                     _, loss = sess.run([optimizer, cost], feed_dict={
                         self.Z: Z_pass,
-                        self.y: y_pass
+                        self.y: y_ohe
                     })
                     epoch_train_loss += loss
                 epoch += 1
