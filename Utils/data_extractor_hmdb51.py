@@ -5,7 +5,7 @@ from sklearn.model_selection import train_test_split
 
 class Data(object):
     def __init__(self):
-        self.path = '/home/alpha/Work/VQS/Data/hmdb51_input'
+        self.path = 'Data/hmdb51_input'
         self.dir = os.listdir(self.path)
 
     def get_split(self):

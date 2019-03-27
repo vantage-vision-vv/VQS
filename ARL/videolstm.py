@@ -7,7 +7,7 @@ from tensorflow.math import exp as exp
 import numpy as np
 
 import sys
-sys.path.insert(0, '/home/alpha/Work/VQS/Utils')
+sys.path.insert(0, 'Utils')
 from data_extractor_hmdb51 import Data
 
 
@@ -218,14 +218,10 @@ class videolstm(object):
         # CNN_4 initialization for second lstm hidden state
         cnn_4_output = conv(X_t[0:1], self.W_cnn_4, padding="SAME")
 
-        At_t = tf.get_variable("At_t", shape=(1,7,7,1), initializer=tf.constant_initializer(value=0))
+        A_temp = tf.get_variable("A_temp", shape=(1,7,7,1), initializer=tf.constant_initializer(value=0))
         initial_states = [cnn_2_output, cnn_1_output,
-                          cnn_4_output, cnn_3_output, At_t]
-        '''
-        augmented_input = []
-        for i in range(self.timesteps):
-            augmented_input.append(tf.pack([M_t[i], X_t[i]]))
-        '''
+                          cnn_4_output, cnn_3_output, A_temp]
+        
         output_states = tf.scan(
             self.clstm_forward, Z, initializer=initial_states)
 
