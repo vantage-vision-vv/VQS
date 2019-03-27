@@ -1,10 +1,14 @@
 import tensorflow as tf
-import tensorflow.nn.convolution as conv
-import tensorflow.math.sigmoid as sig
-import tensorflow.math.tanh as tanh
-import tensorflow.math.multipy as mul
-import tensorflow.math.exp as exp
+from tensorflow.nn import convolution as conv
+from tensorflow.math import sigmoid as sig
+from tensorflow.math import tanh as tanh
+from tensorflow.math import multiply as mul
+from tensorflow.math import exp as exp
 import numpy as np
+
+import sys
+sys.path.insert(0, '/home/alpha/Work/VQS/Utils')
+from data_extractor_hmdb51 import Data
 
 
 class videolstm(object):
@@ -34,6 +38,7 @@ class videolstm(object):
 
         tf.set_random_seed(42)
         np.random.seed(42)
+        self.network()
 
     def network(self):
         # Initilaizer
@@ -131,29 +136,29 @@ class videolstm(object):
             tf.add(
                 tf.add(
                     tf.add(
-                        conv(self.W_first_xi, M_t), conv(self.W_first_hi, H_first_tm1)),
-                    conv(self.W_first_ei, H_second_tm1)),
+                        conv(M_t, self.W_first_xi), conv(H_first_tm1, self.W_first_hi)),
+                    conv(H_second_tm1, self.W_first_ei)),
                 self.b_first_i))
         F_first_t = sig(
             tf.add(
                 tf.add(
                     tf.add(
-                        conv(self.W_first_xf, M_t), conv(self.W_first_hf, H_first_tm1)),
-                    conv(self.W_first_ef, H_second_tm1)),
+                        conv(M_t, self.W_first_xf), conv(H_first_tm1, self.W_first_hf)),
+                    conv(H_second_tm1, self.W_first_ef)),
                 self.b_first_f))
         O_first_t = sig(
             tf.add(
                 tf.add(
                     tf.add(
-                        conv(self.W_first_xo, M_t), conv(self.W_first_ho, H_first_tm1)),
-                    conv(self.W_first_eo, H_second_tm1)),
+                        conv(M_t, self.W_first_xo), conv(H_first_tm1, self.W_first_ho)),
+                    conv(H_second_tm1, self.W_first_eo)),
                 self.b_first_o))
         G_first_t = tanh(
             tf.add(
                 tf.add(
                     tf.add(
-                        conv(self.W_first_xc, M_t), conv(self.W_first_hc, H_first_tm1)),
-                    conv(self.W_first_ec, H_second_tm1)),
+                        conv(M_t, self.W_first_xc), conv(H_first_tm1, self.W_first_hc)),
+                    conv(H_second_tm1, self.W_first_ec)),
                 self.b_first_c))
         C_first_t = tf.add(mul(F_first_t, C_first_tm1),
                            mul(I_first_t, G_first_t))
@@ -161,7 +166,7 @@ class videolstm(object):
 
         # intermediate attention cnn layer
         Z_t = conv(self.W_inter_z, tanh(
-            tf.add(tf.add(conv(self.W_inter_xa, X_t), conv(self.W_inter_ha, H_first_t)), self.b_inter_a)))
+            tf.add(tf.add(conv(X_t, self.W_inter_xa), conv(H_first_t, self.W_inter_ha)), self.b_inter_a)))
         A_t = exp(Z_t)/np.sum(exp(Z_t))
         X_tilda_t = mul(A_t, X_t)
 
@@ -169,22 +174,22 @@ class videolstm(object):
         I_second_t = sig(
             tf.add(
                 tf.add(
-                    conv(self.W_second_xi, X_tilda_t), conv(self.W_second_hi, H_second_tm1)),
+                    conv(X_tilda_t, self.W_second_xi), conv(H_second_tm1, self.W_second_hi)),
                 self.b_second_i))
         F_second_t = sig(
             tf.add(
                 tf.add(
-                    conv(self.W_second_xf, X_tilda_t), conv(self.W_second_hf, H_second_tm1)),
+                    conv(X_tilda_t, self.W_second_xf), conv(H_second_tm1, self.W_second_hf)),
                 self.b_second_f))
         O_second_t = sig(
             tf.add(
                 tf.add(
-                    conv(self.W_second_xo, X_tilda_t), conv(self.W_second_ho, H_second_tm1)),
+                    conv(X_tilda_t, self.W_second_xo), conv(H_second_tm1, self.W_second_ho)),
                 self.b_second_o))
         G_second_t = sig(
             tf.add(
                 tf.add(
-                    conv(self.W_second_xc, X_tilda_t), conv(self.W_second_hc, H_second_tm1)),
+                    conv(X_tilda_t, self.W_second_xc), conv(H_second_tm1, self.W_second_hc)),
                 self.b_second_c))
         C_second_t = tf.add(mul(F_second_t, C_second_tm1),
                             mul(I_second_t, G_second_t))
@@ -193,7 +198,8 @@ class videolstm(object):
         return tf.pack([H_first_t, C_first_t, H_second_t, C_second_t, A_t])
 
     def forward(self, Z):
-        M_t, X_t = Z
+        M_t = Z[:, :512, :, :]
+        X_t = Z[:, 512:, :, :]
         # CNN_1 initialization for first lstm cell state
         cnn_1_output = conv(M_t[0], self.W_cnn_1, padding="SAME")
 
@@ -221,7 +227,7 @@ class videolstm(object):
 
         return out
 
-    def train(self, X_train, y_train, X_val, y_val):
+    def train(self):
         prediction = self.forward(self.Z)
         cost = tf.losses.softmax_cross_entropy(
             onehot_labels=self.y, logits=prediction)
@@ -229,6 +235,8 @@ class videolstm(object):
             learning_rate=self.lr).minimize(cost)
 
         tf.get_default_graph()
+        data = Data()
+        train, val, _ = data.get_split()
         with tf.Session() as sess:
             sess.run(tf.global_variables_initializer())
 
@@ -241,20 +249,26 @@ class videolstm(object):
             min_epoch_val_loss = 0
 
             while True:
-                for i in range(X_train.shape[0]):
-                    Z_pass = X_train[i]
-                    y_pass = y_train[i]
+                # training set
+                for i in range(len(train)):
+                    Z_pass, y_pass = data.get_data(train[i])
                     _, loss = sess.run([optimizer, cost], feed_dict={
                         self.Z: Z_pass,
                         self.y: y_pass
                     })
                     epoch_train_loss += loss
                 epoch += 1
-                epoch_train_loss = epoch_train_loss/X_train.shape[0]
-                epoch_val_loss = sess.run(cost, feed_dict={
-                    self.Z: X_val,
-                    self.y: y_val
-                })
+                epoch_train_loss = epoch_train_loss/len(train)
+                # validation error
+                for i in range(len(val)):
+                    Z_pass, y_pass = data.get_data(val[i])
+                    loss = sess.run(cost, feed_dict={
+                        self.Z: Z_pass,
+                        self.y: y_pass
+                    })
+                    epoch_val_loss += loss
+                epoch_val_loss = epoch_val_loss/len(val)
+
                 print('Epoch: '+str(epoch)+'; Training Error: ' +
                       str(epoch_train_loss)+'; Validation Error: '+str(epoch_val_loss))
 
@@ -272,3 +286,7 @@ class videolstm(object):
                 epoch_train_loss_prev = epoch_train_loss
                 epoch_train_loss = 0
                 epoch_val_loss = 0
+
+
+v = videolstm()
+v.train()
