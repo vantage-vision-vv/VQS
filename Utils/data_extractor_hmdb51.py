@@ -18,4 +18,5 @@ class Data(object):
         p = self.path + '/' + n
         Z = np.load(p)
         Z, y = Z
+        Z = Z.reshape((30,7,7,1024))
         return Z, y

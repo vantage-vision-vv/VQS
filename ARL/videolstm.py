@@ -1,5 +1,5 @@
 import tensorflow as tf
-from tensorflow.nn import convolution as conv
+from tensorflow.nn import conv2d as conv
 from tensorflow.math import sigmoid as sig
 from tensorflow.math import tanh as tanh
 from tensorflow.math import multiply as mul
@@ -13,15 +13,15 @@ from data_extractor_hmdb51 import Data
 
 class videolstm(object):
     def __init__(self):
-        self.cnn_filter_1 = (512, 512, 1, 1)
-        self.cnn_filter_2 = (512, 512, 1, 1)
-        self.cnn_filter_3 = (512, 512, 3, 3)
-        self.cnn_filter_4 = (512, 512, 3, 3)
-        self.ctx_kernel_size = (512, 512, 1, 1)
-        self.ctx_transition_size = (512, 512, 1, 1)
-        self.hybrid_transition_size = (512, 512, 1, 1)
-        self.kernel_size = (512, 512, 3, 3)
-        self.transition_size = (512, 512, 3, 3)
+        self.cnn_filter_1 = (1, 1, 512, 512)
+        self.cnn_filter_2 = (1, 1, 512, 512)
+        self.cnn_filter_3 = (3, 3, 512, 512)
+        self.cnn_filter_4 = (3, 3, 512, 512)
+        self.ctx_kernel_size = (1, 1, 512, 512)
+        self.ctx_transition_size = (1, 1, 512, 512)
+        self.hybrid_transition_size = (1, 1, 512, 512)
+        self.kernel_size = (3, 3, 512, 512)
+        self.transition_size = (3, 3, 512, 512)
         self.feature_in = 512
         self.feature_out = 512
         self.ctx_in = 512
@@ -30,7 +30,7 @@ class videolstm(object):
         self.actions = 51  # HMDB51
         self.timesteps = 30
         self.Z = tf.placeholder(
-            tf.float32, shape=(self.timesteps, 1024, 7, 7))
+            tf.float32, shape=(self.timesteps, 7, 7, 1024))
         self.y = tf.placeholder(
             tf.float32, shape=(self.actions))
 
@@ -127,10 +127,12 @@ class videolstm(object):
             self.feature_in,), initializer=tf.constant_initializer(value=0))
 
     def clstm_forward(self, prev, inp):
-        H_first_tm1, C_first_tm1, H_second_tm1, C_second_tm1, _ = tf.unpack(
+        H_first_tm1, C_first_tm1, H_second_tm1, C_second_tm1, _ = tf.unstack(
             prev)
-        M_t, X_t = tf.unpack(inp)
-
+        M_t = inp[:, :, :512]
+        X_t = inp[:, :, 512:]
+        M_t = tf.reshape(M_t, (1, 7, 7, 512))
+        X_t = tf.reshape(X_t, (1, 7, 7, 512))
         # first network motion layer
         I_first_t = sig(
             tf.add(
@@ -195,31 +197,32 @@ class videolstm(object):
                             mul(I_second_t, G_second_t))
         H_second_t = mul(O_second_t, tanh(C_second_t))
 
-        return tf.pack([H_first_t, C_first_t, H_second_t, C_second_t, A_t])
+        return tf.stack([H_first_t, C_first_t, H_second_t, C_second_t, A_t])
 
     def forward(self, Z):
-        M_t = Z[:, :512, :, :]
-        X_t = Z[:, 512:, :, :]
+        M_t = Z[:, :, :, :512]
+        X_t = Z[:, :, :, 512:]
         # CNN_1 initialization for first lstm cell state
-        cnn_1_output = conv(M_t[0], self.W_cnn_1, padding="SAME")
+        cnn_1_output = conv(M_t[0:1], self.W_cnn_1, padding="SAME")
 
         # CNN_2 initialization for first lstm hidden state
-        cnn_2_output = conv(M_t[0], self.W_cnn_2, padding="SAME")
+        cnn_2_output = conv(M_t[0:1], self.W_cnn_2, padding="SAME")
 
         # CNN_3 initialization for second lstm cell state
-        cnn_3_output = conv(X_t[0], self.W_cnn_3, padding="SAME")
+        cnn_3_output = conv(X_t[0:1], self.W_cnn_3, padding="SAME")
 
         # CNN_4 initialization for second lstm hidden state
-        cnn_4_output = conv(X_t[0], self.W_cnn_4, padding="SAME")
+        cnn_4_output = conv(X_t[0:1], self.W_cnn_4, padding="SAME")
 
         initial_states = [cnn_2_output, cnn_1_output,
                           cnn_4_output, cnn_3_output, cnn_1_output]
+        '''
         augmented_input = []
-        for i in range(len(M_t)):
+        for i in range(self.timesteps):
             augmented_input.append(tf.pack([M_t[i], X_t[i]]))
-
+        '''
         output_states = tf.scan(
-            self.clstm_forward, augmented_input, initializer=initial_states)
+            self.clstm_forward, Z, initializer=initial_states)
 
         temp_1 = tf.layers.dense(output_states[2], 1024, activation="tanh")
         temp_2 = tf.layers.dropout(temp_1, rate=0.7)
