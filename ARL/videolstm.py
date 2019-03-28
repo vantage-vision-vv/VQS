@@ -298,7 +298,11 @@ class videolstm(object):
                 elif epoch_val_loss >= min_epoch_val_loss:
                     patience_cnt += 1
 
-                if epoch == 3000 or (epoch_train_loss_prev - epoch_train_loss) <= 0.001 or patience_cnt == patience:
+                if epoch_train_loss_prev > epoch_train_loss:
+                    if epoch_train_loss_prev - epoch_train_loss <= 0.001:
+                        break
+
+                if epoch == 3000 or patience_cnt == patience:
                     break
 
                 epoch_train_loss_prev = epoch_train_loss
