@@ -31,7 +31,7 @@ if __name__ == '__main__':
         epoch_val_loss = 0
         epoch_train_loss = 0
         epoch_train_loss_prev = 0
-        min_epoch_val_loss = 0
+        min_epoch_val_loss = 1e+10
 
         while True:
             # training set
