@@ -1,5 +1,5 @@
 from videolstm import videolstm
-import tensorlow as tf
+import tensorflow as tf
 import numpy as np
 
 import sys
@@ -65,16 +65,15 @@ if __name__ == '__main__':
                 min_epoch_val_loss = epoch_val_loss
                 ################################
                 # save the model
+                saver = tf.train.Saver()
+                saver.save(sess, 'Models/videolstm_model',global_step=42)
                 ################################
                 patience_cnt = 0
 
             elif epoch_val_loss >= min_epoch_val_loss:
                 patience_cnt += 1
 
-            if epoch_train_loss_prev > epoch_train_loss:
-                if epoch_train_loss_prev - epoch_train_loss <= 0.001:
-                    break
-
+            # break conditions
             if epoch == 3000 or patience_cnt == patience:
                 break
 

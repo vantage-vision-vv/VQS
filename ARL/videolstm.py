@@ -28,10 +28,10 @@ class videolstm(object):
 
         self.actions = 51  # HMDB51
         self.timesteps = 30
-        self.Z = tf.placeholder(
-            tf.float32, shape=(self.timesteps, 7, 7, 1024))
+        self.Z = tf.placeholder(tf.float32, shape=(
+            self.timesteps, 7, 7, 1024), name='input')
         self.y = tf.placeholder(
-            tf.float32, shape=(self.actions))
+            tf.float32, shape=(self.actions), name='output')
 
         self.lr = 1e-5
 
