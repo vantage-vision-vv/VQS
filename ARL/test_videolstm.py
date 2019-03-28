@@ -22,7 +22,7 @@ if __name__ == '__main__':
         saver.restore(sess, tf.train.latest_checkpoint('Models/'))
         graph = tf.get_default_graph()
         Z = graph.get_tensor_by_name('input:0')
-        y = graph.get_tensor_by_name('output:0')
+        out = graph.get_tensor_by_name('output:0')
         #################################
         # test data predictions
         for i in range(len(test)):

@@ -31,7 +31,7 @@ class videolstm(object):
         self.Z = tf.placeholder(tf.float32, shape=(
             self.timesteps, 7, 7, 1024), name='input')
         self.y = tf.placeholder(
-            tf.float32, shape=(self.actions), name='output')
+            tf.float32, shape=(self.actions))
 
         self.lr = 1e-5
 
@@ -235,4 +235,5 @@ class videolstm(object):
         temp_2 = tf.layers.dropout(temp_1, rate=0.7)
         out = tf.layers.dense(temp_2, self.actions, activation=None)
         out = tf.reshape(out, [-1])
+        out = tf.identify(out, name='output')
         return out
