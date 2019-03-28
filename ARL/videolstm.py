@@ -235,5 +235,5 @@ class videolstm(object):
         temp_2 = tf.layers.dropout(temp_1, rate=0.7)
         out = tf.layers.dense(temp_2, self.actions, activation=None)
         out = tf.reshape(out, [-1])
-        out = tf.identify(out, name='output')
+        out = tf.identity(out, name='output')
         return out

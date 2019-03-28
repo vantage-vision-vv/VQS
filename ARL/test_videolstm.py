@@ -27,7 +27,7 @@ if __name__ == '__main__':
         # test data predictions
         for i in range(len(test)):
             Z_pass, y_target = data.get_data(test[i])
-            pred = sess.run(y, feed_dict={Z: Z_pass})
+            pred = sess.run(out, feed_dict={Z: Z_pass})
 
             pred_test.append(np.argmax(pred))
             y_test.append(y_target)
