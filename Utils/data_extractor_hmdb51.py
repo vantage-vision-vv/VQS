@@ -12,7 +12,7 @@ class Data(object):
         train, test = train_test_split(
             self.dir, test_size=0.2, random_state=42)
         train, val = train_test_split(train, test_size=0.2, random_state=42)
-        return train[:10], val[:5], test[:5]
+        return train, val, test
 
     def get_data(self, n):
         p = self.path + '/' + n
