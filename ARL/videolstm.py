@@ -37,7 +37,7 @@ class videolstm(object):
         self.y = tf.placeholder(
             tf.float32, shape=(self.actions))
 
-        self.lr = 0.001
+        self.lr = 1e-5
 
         tf.set_random_seed(42)
         np.random.seed(42)
