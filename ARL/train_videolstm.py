@@ -74,7 +74,7 @@ if __name__ == '__main__':
                 patience_cnt += 1
 
             # break conditions
-            if epoch == 11 or patience_cnt == patience:
+            if epoch == 1000 or patience_cnt == patience:
                 break
 
             epoch_train_loss_prev = epoch_train_loss
