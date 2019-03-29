@@ -175,6 +175,7 @@ class videolstm(object):
                     self.b_inter_a)),
             self.W_inter_z, padding='SAME', strides=[1, 1, 1, 1])
         A_t = exp(Z_t)/np.sum(exp(Z_t))
+        A_t = tf.identity(A_t, name='attention')
         X_tilda_t = mul(A_t, X_t)
 
         # second appearance layer

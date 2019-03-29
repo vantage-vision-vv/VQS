@@ -1,6 +1,6 @@
 import tensorflow as tf
 import numpy as np
-from sklearn.metrics import classification_report
+from sklearn.metrics import classification_report, accuracy_score
 
 import sys
 sys.path.insert(0, 'Utils')
@@ -33,5 +33,7 @@ if __name__ == '__main__':
             y_test.append(y_target)
 
     report = classification_report(y_true=y_test, y_pred=pred_test)
+    acc = accuracy_score(y_true=y_test, y_pred=pred_test)
+    print('Classification accuracy for test data: ' + str(acc))
     print('Classification report for test data: ')
     print(report)
