@@ -6,16 +6,18 @@ from keras.preprocessing.image import img_to_array
 from keras.applications.vgg16 import VGG16
 from keras.applications.vgg16 import preprocess_input
 
+data_dir = '/media/alpha/My Passport/Crime-Dataset/UCF-Anomaly-Detection-Dataset/UCF_Crimes/Videos/'
+
 model = VGG16(weights='imagenet', include_top=False)
 
-classes = os.listdir("./Win-Rar")
+classes = os.listdir(data_dir)
 
 frame_numbers = []
 video_label = []
 video_name = []
 
 
-with open("Data/hmdb51_features/class_label.txt", "w") as fl:
+with open("Data/crime_data_features/class_label.txt", "w") as fl:
     for i in range(len(classes)):
         fl.write(classes[i]+str(i)+"\n")
 
@@ -48,13 +50,13 @@ def compute_flow(curr, prev):
 
 
 for index, item in enumerate(classes):
-    files = os.listdir("./Win-Rar/"+item+"/"+item+"/")
+    files = os.listdir(data_dir+item+"/")
     cnt = 0
     for vid in files:
         cnt += 1
         rgb_features = []
         flow_features = []
-        cap = cv2.VideoCapture("./Win-Rar/"+item+"/"+item+"/"+vid)
+        cap = cv2.VideoCapture(data_dir+item+"/"+vid)
         frame_length = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
         chk, initial_frame = cap.read()
         if chk is False:
@@ -85,14 +87,14 @@ for index, item in enumerate(classes):
     print(item + " class completed")
 
 
-with open("Data/hmdb51_features/frame_number.txt", "w") as fl:
+with open("Data/crime_data_features/frame_number.txt", "w") as fl:
     for item in frame_numbers:
         fl.write(str(item) + "\n")
 
-with open("Data/hmdb51_features/video_label.txt", "w") as fl:
+with open("Data/crime_data_features/video_label.txt", "w") as fl:
     for item in video_label:
         fl.write(str(item) + "\n")
 
-with open("Data/hmdb51_features/video_name.txt", "w") as fl:
+with open("Data/crime_data_features/video_name.txt", "w") as fl:
     for item in video_name:
         fl.write(str(item) + "\n")
