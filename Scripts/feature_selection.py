@@ -9,7 +9,7 @@ def GetSpacedElements(array, numElems=30):
 
 
 def h5_write(d, name):
-    path = 'Data/hmdb51_input/' + name + '.npy'
+    path = 'Data/crime_input/' + name + '.npy'
     #hf = h5py.File(path, 'w')
     #hf.create_dataset(name, data=d)
     # hf.close()
@@ -22,9 +22,9 @@ def extract_feature(samples, key):
     for name in samples:
         cnt += 1
         name = name.split('\n')[0]
-        M_path = 'Data/hmdb51_features/context_file/' + \
+        M_path = 'Data/crime_data_features/context_file/' + \
             str(name) + '.h5'
-        X_path = 'Data/hmdb51_features/data_file/' + \
+        X_path = 'Data/crime_data_features/data_file/' + \
             str(name) + '.h5'
         M_file = h5py.File(M_path, 'r')
         X_file = h5py.File(X_path, 'r')
@@ -45,9 +45,9 @@ def extract_feature(samples, key):
 
 
 if __name__ == '__main__':
-    video_label_path = 'Data/hmdb51_features/video_label.txt'
-    video_name_path = 'Data/hmdb51_features/video_name.txt'
-    frame_number_path = 'Data/hmdb51_features/frame_number.txt'
+    video_label_path = 'Data/crime_data_features/video_label.txt'
+    video_name_path = 'Data/crime_data_features/video_name.txt'
+    frame_number_path = 'Data/crime_data_features/frame_number.txt'
 
     with open(video_label_path, 'r') as myfile:
         video_labels = myfile.readlines()

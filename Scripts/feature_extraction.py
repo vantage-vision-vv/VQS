@@ -6,7 +6,7 @@ from keras.preprocessing.image import img_to_array
 from keras.applications.vgg16 import VGG16
 from keras.applications.vgg16 import preprocess_input
 
-data_dir = '/media/alpha/My Passport/Crime-Dataset/UCF-Anomaly-Detection-Dataset/UCF_Crimes/Videos/'
+data_dir = '/home/user/Downloads/Crime-Dataset/UCF-Anomaly-Detection-Dataset/UCF_Crimes/Videos/'
 
 model = VGG16(weights='imagenet', include_top=False)
 
@@ -63,10 +63,14 @@ for index, item in enumerate(classes):
             continue
         initial_frame = cv2.resize(
             initial_frame, (224, 224), interpolation=cv2.INTER_AREA)
+        counter = 0
         for i in range(frame_length-1):
             chk, frame = cap.read()
             if chk is False:
                 continue
+            counter += 1
+            if counter%8 != 0:
+                continue		
             image = cv2.resize(frame, (224, 224), interpolation=cv2.INTER_AREA)
             rgb_features.append(compute_rgb(image))
             flow_features.append(compute_flow(image, initial_frame))
@@ -74,8 +78,8 @@ for index, item in enumerate(classes):
         frame_numbers.append(len(rgb_features))
         video_label.append(index)
         video_name.append(vid)
-        hf_rgb = h5py.File("./data_file/"+vid+".h5", 'w')
-        hf_flow = h5py.File("./context_file/"+vid+".h5", 'w')
+        hf_rgb = h5py.File("Data/crime_data_features/data_file/"+vid+".h5", 'w')
+        hf_flow = h5py.File("Data/crime_data_features/context_file/"+vid+".h5", 'w')
         hf_rgb.create_dataset('data_file', data=rgb_features)
         hf_flow.create_dataset('context_file', data=flow_features)
         hf_rgb.close()
