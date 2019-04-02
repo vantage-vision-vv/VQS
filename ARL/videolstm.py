@@ -33,7 +33,7 @@ class videolstm(object):
         self.y = tf.placeholder(
             tf.float32, shape=(self.actions))
 
-        self.lr = 1e-6
+        self.lr = 1e-5
 
         tf.set_random_seed(42)
         np.random.seed(42)
@@ -175,7 +175,6 @@ class videolstm(object):
                     self.b_inter_a)),
             self.W_inter_z, padding='SAME', strides=[1, 1, 1, 1])
         A_t = exp(Z_t)/np.sum(exp(Z_t))
-        A_t = tf.identity(A_t, name='attention')
         X_tilda_t = mul(A_t, X_t)
 
         # second appearance layer
@@ -232,6 +231,7 @@ class videolstm(object):
             self.clstm_forward, Z, initializer=initial_states)
 
         fc_input = tf.reshape(output_states[2][-1], [1, -1])
+        Att_temp = tf.identity(output_states[-1][-1],name='attention')
         temp_1 = tf.layers.dense(fc_input, 1024, activation="tanh")
         temp_2 = tf.layers.dropout(temp_1, rate=0.7)
         out = tf.layers.dense(temp_2, self.actions, activation=None)

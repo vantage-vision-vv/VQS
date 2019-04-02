@@ -68,9 +68,6 @@ for index, item in enumerate(classes):
             chk, frame = cap.read()
             if chk is False:
                 continue
-            counter += 1
-            if counter%8 != 0:
-                continue		
             image = cv2.resize(frame, (224, 224), interpolation=cv2.INTER_AREA)
             rgb_features.append(compute_rgb(image))
             flow_features.append(compute_flow(image, initial_frame))

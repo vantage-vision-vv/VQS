@@ -4,15 +4,15 @@ from collections import Counter
 
 
 def GetSpacedElements(array, numElems=30):
-    out = array[np.round(np.linspace(0, len(array)-1, numElems)).astype(int)]
-    return out
+    number_seq = len(array)/numElems
+    res = [] * number_seq
+    for i in range(number_seq*numElems):
+        res[i%number_seq].append(i)
+    return np.array(res)
 
 
-def h5_write(d, name):
+def np_write(d, name):
     path = 'Data/crime_input/' + name + '.npy'
-    #hf = h5py.File(path, 'w')
-    #hf.create_dataset(name, data=d)
-    # hf.close()
     np.save(path, d)
 
 
@@ -20,7 +20,6 @@ def extract_feature(samples, key):
     Z = []
     cnt = 0
     for name in samples:
-        cnt += 1
         name = name.split('\n')[0]
         M_path = 'Data/crime_data_features/context_file/' + \
             str(name) + '.h5'
@@ -33,15 +32,17 @@ def extract_feature(samples, key):
         M_file.close()
         X_file.close()
         index = np.arange(len(M))
-        index = GetSpacedElements(index)
+        index = GetSpacedElements(index) # will return list now
         M = M[index, :]
         X = X[index, :]
-        M = M.reshape((30, 512, 7, 7))
-        X = X.reshape((30, 512, 7, 7))
-        Z_temp = np.hstack((M, X))
-        data = [Z_temp, key]
-        name = str(key)+'_'+str(cnt)
-        h5_write(data, name)
+	for i in range(index.shape[0]):
+            cnt += 1	# for naming purpose
+            M_temp = M[i,:].reshape((30, 512, 7, 7))
+            X_temp = X[i,:].reshape((30, 512, 7, 7))
+            Z_temp = np.hstack((M_temp, X_temp))
+            data = [Z_temp, key]
+            name = str(key)+'_'+str(cnt)
+            np_write(data, name)
 
 
 if __name__ == '__main__':
@@ -68,14 +69,8 @@ if __name__ == '__main__':
         else:
             vid_dict[key] = [value]
 
-    class_num = Counter(video_labels)
-    min_key = min(class_num, key=class_num.get)
-    clips_bottleneck = class_num.get(min_key)
-
-    Z = []
-    y = []
     for key in vid_dict.keys():
         vid_list = vid_dict.get(key)
         np.random.shuffle(vid_list)
-        samples = vid_list[:clips_bottleneck]
+        samples = vid_list
         extract_feature(samples, key)

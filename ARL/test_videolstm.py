@@ -24,12 +24,12 @@ if __name__ == '__main__':
         graph = tf.get_default_graph()
         Z = graph.get_tensor_by_name('input:0')
         out = graph.get_tensor_by_name('output:0')
-        att = graph.get_tensor_by_name('attention:0')
+        Att_t = graph.get_tensor_by_name('attention:0')
         #################################
         # test data predictions
         for i in range(len(test)):
             Z_pass, y_target = data.get_data(test[i])
-            pred, att_map = sess.run([out, att], feed_dict={Z: Z_pass})
+            pred,att_map = sess.run([out,Att_t], feed_dict={Z: Z_pass})
 
             pred_test.append(np.argmax(pred))
             y_test.append(y_target)
