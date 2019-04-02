@@ -2,9 +2,10 @@ import tensorflow as tf
 import numpy as np
 from sklearn.metrics import classification_report, accuracy_score
 
+# import appropriate dataset
 import sys
 sys.path.insert(0, 'Utils')
-from data_extractor_hmdb51 import Data
+from data_extractor_crime import Data
 
 
 if __name__ == '__main__':
