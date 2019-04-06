@@ -6,21 +6,10 @@ from keras.preprocessing.image import img_to_array
 from keras.applications.vgg16 import VGG16
 from keras.applications.vgg16 import preprocess_input
 
-data_dir = '/home/user/Downloads/Crime-Dataset/UCF-Anomaly-Detection-Dataset/UCF_Crimes/Videos/'
 
 model = VGG16(weights='imagenet', include_top=False)
 
-classes = os.listdir(data_dir)
-
-frame_numbers = []
-video_label = []
-video_name = []
-
-
-with open("Data/crime_data_features/class_label.txt", "w") as fl:
-    for i in range(len(classes)):
-        fl.write(classes[i]+str(i)+"\n")
-
+data_dir = '/home/user/Downloads/Crime-Dataset/UCF-Anomaly-Detection-Dataset/UCF_Crimes/Videos/'
 
 def compute_rgb(image):
     image = img_to_array(image)
@@ -49,53 +38,45 @@ def compute_flow(curr, prev):
     return compute_rgb(stack.reshape((224, 224, 3)))
 
 
-for index, item in enumerate(classes):
-    files = os.listdir(data_dir+item+"/")
-    cnt = 0
-    for vid in files:
-        cnt += 1
-        rgb_features = []
-        flow_features = []
-        cap = cv2.VideoCapture(data_dir+item+"/"+vid)
-        frame_length = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
-        chk, initial_frame = cap.read()
-        if chk is False:
-            continue
-        initial_frame = cv2.resize(
-            initial_frame, (224, 224), interpolation=cv2.INTER_AREA)
-        counter = 0
-        for i in range(frame_length-1):
-            chk, frame = cap.read()
+def extract_features(classes,label):
+    video_label = []
+    video_name = []
+    for item in classes:
+        print(item)
+        files = os.listdir(data_dir+item+"/")
+        cnt = 0
+        for vid in files:
+            cnt += 1
+            rgb_features = []
+            flow_features = []
+            cap = cv2.VideoCapture(data_dir+item+"/"+vid)
+            frame_length = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
+            chk, initial_frame = cap.read()
             if chk is False:
                 continue
-            image = cv2.resize(frame, (224, 224), interpolation=cv2.INTER_AREA)
-            rgb_features.append(compute_rgb(image))
-            flow_features.append(compute_flow(image, initial_frame))
-            initial_frame = image
-        frame_numbers.append(len(rgb_features))
-        video_label.append(index)
-        video_name.append(vid)
-        hf_rgb = h5py.File("Data/crime_data_features/data_file/"+vid+".h5", 'w')
-        hf_flow = h5py.File("Data/crime_data_features/context_file/"+vid+".h5", 'w')
-        hf_rgb.create_dataset('data_file', data=rgb_features)
-        hf_flow.create_dataset('context_file', data=flow_features)
-        hf_rgb.close()
-        hf_flow.close()
-        if cnt % 10 == 0:
-            print(cnt)
-        else:
-            print('.', end='')
-    print(item + " class completed")
+            initial_frame = cv2.resize(
+                initial_frame, (224, 224), interpolation=cv2.INTER_AREA)
+            for i in range(frame_length-1):
+                chk, frame = cap.read()
+                if chk is False:
+                    continue
+                image = cv2.resize(frame, (224, 224), interpolation=cv2.INTER_AREA)
+                rgb_features.append(compute_rgb(image))
+                flow_features.append(compute_flow(image, initial_frame))
+                initial_frame = image
+            video_label.append(label)
+            video_name.append(vid)
+            hf_rgb = h5py.File("Data/crime_data_features/data_file/"+vid+".h5", 'w')
+            hf_flow = h5py.File("Data/crime_data_features/context_file/"+vid+".h5", 'w')
+            hf_rgb.create_dataset('data_file', data=rgb_features)
+            hf_flow.create_dataset('context_file', data=flow_features)
+            hf_rgb.close()
+            hf_flow.close()
+            if cnt % 10 == 0:
+                print(cnt)
+            else:
+                print('.', end='')
+        print(item + " class completed")
+    return video_label,video_name
 
 
-with open("Data/crime_data_features/frame_number.txt", "w") as fl:
-    for item in frame_numbers:
-        fl.write(str(item) + "\n")
-
-with open("Data/crime_data_features/video_label.txt", "w") as fl:
-    for item in video_label:
-        fl.write(str(item) + "\n")
-
-with open("Data/crime_data_features/video_name.txt", "w") as fl:
-    for item in video_name:
-        fl.write(str(item) + "\n")

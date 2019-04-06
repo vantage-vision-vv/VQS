@@ -4,8 +4,8 @@ from collections import Counter
 
 
 def GetSpacedElements(array, numElems=30):
-    number_seq = len(array)/numElems
-    res = [] * number_seq
+    number_seq = len(array)//numElems
+    res = [[] for i in range(number_seq)]
     for i in range(number_seq*numElems):
         res[i%number_seq].append(i)
     return np.array(res)
@@ -35,7 +35,7 @@ def extract_feature(samples, key):
         index = GetSpacedElements(index) # will return list now
         M = M[index, :]
         X = X[index, :]
-	for i in range(index.shape[0]):
+        for i in range(index.shape[0]):
             cnt += 1	# for naming purpose
             M_temp = M[i,:].reshape((30, 512, 7, 7))
             X_temp = X[i,:].reshape((30, 512, 7, 7))
@@ -44,20 +44,7 @@ def extract_feature(samples, key):
             name = str(key)+'_'+str(cnt)
             np_write(data, name)
 
-
-if __name__ == '__main__':
-    video_label_path = 'Data/crime_data_features/video_label.txt'
-    video_name_path = 'Data/crime_data_features/video_name.txt'
-    frame_number_path = 'Data/crime_data_features/frame_number.txt'
-
-    with open(video_label_path, 'r') as myfile:
-        video_labels = myfile.readlines()
-        video_labels = np.array(video_labels).astype(int)
-
-    with open(video_name_path, 'r') as myfile:
-        video_names = myfile.readlines()
-        video_names = np.array(video_names).astype(str)
-
+def select_features(video_labels,video_names):
     vid_dict = {}
     for i in range(len(video_labels)):
         key = video_labels[i]
