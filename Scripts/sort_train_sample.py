@@ -1,7 +1,7 @@
 import os
 
-dest_path = ""
-src_path = ""
+dest_path = "/tmp/Virat"
+src_path = "/tmp/Virat_Trimed"
 
 files = os.listdir(src_path)
 
