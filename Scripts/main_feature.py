@@ -9,7 +9,7 @@ classes = os.listdir(data_dir)
 
 
 
-with open("Data/virat_features/class_label.txt", "w") as fl:
+with open("/tmp/Data/virat_features/class_label.txt", "w") as fl:
     for i in range(len(classes)):
         fl.write(classes[i]+str(i)+"\n")
 
@@ -18,10 +18,10 @@ with open("Data/virat_features/class_label.txt", "w") as fl:
 for index,item in enumerate(classes):
     video_label,video_name = extract_features([item],index)
     select_features(video_label,video_name)
-    os.system(" rm -rf ./Data/virat_features/data_file")
-    os.system(" rm -rf ./Data/virat_features/context_file")
-    os.system("mkdir ./Data/virat_features/data_file")
-    os.system("mkdir ./Data/virat_features/context_file")
+    os.system(" rm -rf /tmp/Data/virat_features/data_file")
+    os.system(" rm -rf /tmp/Data/virat_features/context_file")
+    os.system("mkdir /tmp/Data/virat_features/data_file")
+    os.system("mkdir /tmp/Data/virat_features/context_file")
      
     
 

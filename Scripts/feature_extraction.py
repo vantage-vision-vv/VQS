@@ -66,8 +66,8 @@ def extract_features(classes,label):
                 initial_frame = image
             video_label.append(label)
             video_name.append(vid)
-            hf_rgb = h5py.File("Data/virat_features/data_file/"+vid+".h5", 'w')
-            hf_flow = h5py.File("Data/virat_features/context_file/"+vid+".h5", 'w')
+            hf_rgb = h5py.File("/tmp/Data/virat_features/data_file/"+vid+".h5", 'w')
+            hf_flow = h5py.File("/tmp/Data/virat_features/context_file/"+vid+".h5", 'w')
             hf_rgb.create_dataset('data_file', data=rgb_features)
             hf_flow.create_dataset('context_file', data=flow_features)
             hf_rgb.close()
