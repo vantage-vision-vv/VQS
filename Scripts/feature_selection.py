@@ -12,7 +12,7 @@ def GetSpacedElements(array, numElems=30):
 
 
 def np_write(d, name):
-    path = 'Data/crime_input/' + name + '.npy'
+    path = 'Data/virat_input/' + name + '.npy'
     np.save(path, d)
 
 
@@ -21,9 +21,9 @@ def extract_feature(samples, key):
     cnt = 0
     for name in samples:
         name = name.split('\n')[0]
-        M_path = 'Data/crime_data_features/context_file/' + \
+        M_path = 'Data/virat_features/context_file/' + \
             str(name) + '.h5'
-        X_path = 'Data/crime_data_features/data_file/' + \
+        X_path = 'Data/virat_features/data_file/' + \
             str(name) + '.h5'
         M_file = h5py.File(M_path, 'r')
         X_file = h5py.File(X_path, 'r')
