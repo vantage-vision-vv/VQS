@@ -6,7 +6,7 @@ from feature_selection import select_features
 
 data_dir = '/tmp/Virat/'
 classes = os.listdir(data_dir)
-
+classes = classes.sort()
 
 
 with open("/tmp/Data/virat_features/class_label.txt", "w") as fl:
@@ -16,7 +16,8 @@ with open("/tmp/Data/virat_features/class_label.txt", "w") as fl:
 
 
 for index,item in enumerate(classes):
-    video_label,video_name = extract_features([item],index)
+    if item != 'Carry':
+        video_label,video_name = extract_features([item],index)
     select_features(video_label,video_name)
     os.system(" rm -rf /tmp/Data/virat_features/data_file")
     os.system(" rm -rf /tmp/Data/virat_features/context_file")

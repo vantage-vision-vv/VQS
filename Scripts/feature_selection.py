@@ -4,6 +4,8 @@ from collections import Counter
 
 
 def GetSpacedElements(array, numElems=30):
+    if len(array) < numElems:
+        return None
     number_seq = len(array)//numElems
     res = [[] for i in range(number_seq)]
     for i in range(number_seq*numElems):
@@ -33,6 +35,8 @@ def extract_feature(samples, key):
         X_file.close()
         index = np.arange(len(M))
         index = GetSpacedElements(index) # will return list now
+        if index is None:
+            continue
         M = M[index, :]
         X = X[index, :]
         for i in range(index.shape[0]):
