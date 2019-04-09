@@ -4,7 +4,6 @@ from feature_selection import select_features
 import numpy as np
 
 
-
 data_dir = '/tmp/Virat/'
 classes = os.listdir(data_dir)
 classes.sort()
@@ -15,24 +14,12 @@ with open("/tmp/Data/virat_features/class_label.txt", "w") as fl:
         fl.write(classes[i]+str(i)+"\n")
 
 
-
-for index,item in enumerate(classes):
-    video_label,video_name = extract_features([item],index)
+for index, item in enumerate(classes):
+    video_label, video_name = extract_features([item], index)
+    '''
     select_features(video_label,video_name)
     os.system(" rm -rf /tmp/Data/virat_features/data_file")
     os.system(" rm -rf /tmp/Data/virat_features/context_file")
     os.system("mkdir /tmp/Data/virat_features/data_file")
     os.system("mkdir /tmp/Data/virat_features/context_file")
-     
-    
-
-
-
-
-
-
-
-
-
-
-
+    '''
