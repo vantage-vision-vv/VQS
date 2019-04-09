@@ -1,6 +1,7 @@
 import os
 from feature_extraction import extract_features
 from feature_selection import select_features
+import numpy as np
 
 
 
@@ -18,6 +19,10 @@ with open("/tmp/Data/virat_features/class_label.txt", "w") as fl:
 for index,item in enumerate(classes):
     if item != 'Carry':
         video_label,video_name = extract_features([item],index)
+    else:
+        video_name = os.listdir('/tmp/Virat/Carry')
+        video_label = np.zeros(len(video_name))
+        
     select_features(video_label,video_name)
     os.system(" rm -rf /tmp/Data/virat_features/data_file")
     os.system(" rm -rf /tmp/Data/virat_features/context_file")
