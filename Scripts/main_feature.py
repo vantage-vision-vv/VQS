@@ -6,7 +6,7 @@ from feature_selection import select_features
 
 data_dir = '/tmp/Virat/'
 classes = os.listdir(data_dir)
-classes = classes.sort()
+classes.sort()
 
 
 with open("/tmp/Data/virat_features/class_label.txt", "w") as fl:
