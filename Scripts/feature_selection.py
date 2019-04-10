@@ -3,7 +3,7 @@ import h5py
 from collections import Counter
 
 
-def GetSpacedElements(array, numElems=30):
+def GetSpacedElements(array, numElems=20):
     if len(array) < numElems:
         return None
     number_seq = len(array)//numElems
