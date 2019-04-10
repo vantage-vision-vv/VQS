@@ -41,8 +41,8 @@ def extract_feature(samples, key):
         X = X[index, :]
         for i in range(index.shape[0]):
             cnt += 1	# for naming purpose
-            M_temp = M[i,:].reshape((30, 512, 7, 7))
-            X_temp = X[i,:].reshape((30, 512, 7, 7))
+            M_temp = M[i,:].reshape((20, 512, 7, 7))
+            X_temp = X[i,:].reshape((20, 512, 7, 7))
             Z_temp = np.hstack((M_temp, X_temp))
             data = [Z_temp, key]
             name = str(key)+'_'+str(cnt)
