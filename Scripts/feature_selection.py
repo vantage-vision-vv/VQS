@@ -3,7 +3,7 @@ import h5py
 from collections import Counter
 
 
-d = 'autotrain'
+d = 'train'
 
 def GetSpacedElements(array, numElems=30):
     if len(array) < numElems:

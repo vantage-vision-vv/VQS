@@ -9,7 +9,7 @@ from keras.applications.vgg16 import preprocess_input
 
 model = VGG16(weights='imagenet', include_top=False)
 
-d = 'autotrain'
+d = 'train'
 data_dir = '/tmp/Hollywood/'+ d + '/'
 
 def compute_rgb(image):
