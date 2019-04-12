@@ -10,7 +10,8 @@ from keras.applications.vgg16 import preprocess_input
 model = VGG16(weights='imagenet', include_top=False)
 
 d = 'train'
-data_dir = '/tmp/Hollywood/'+ d + '/'
+data_dir = '/tmp/Hollywood/' + d + '/'
+
 
 def compute_rgb(image):
     image = img_to_array(image)
@@ -39,11 +40,10 @@ def compute_flow(curr, prev):
     return compute_rgb(stack.reshape((224, 224, 3)))
 
 
-def extract_features(classes,label):
+def extract_features(classes):
     video_label = []
     video_name = []
-    for item in classes:
-        print(item)
+    for label, item in enumerate(classes):
         files = os.listdir(data_dir+item+"/")
         cnt = 0
         for vid in files:
@@ -61,14 +61,17 @@ def extract_features(classes,label):
                 chk, frame = cap.read()
                 if chk is False:
                     continue
-                image = cv2.resize(frame, (224, 224), interpolation=cv2.INTER_AREA)
+                image = cv2.resize(frame, (224, 224),
+                                   interpolation=cv2.INTER_AREA)
                 rgb_features.append(compute_rgb(image))
                 flow_features.append(compute_flow(image, initial_frame))
                 initial_frame = image
             video_label.append(label)
             video_name.append(vid)
-            hf_rgb = h5py.File("/tmp/Data/hollywood_features/"+d+"/data_file/"+vid+".h5", 'w')
-            hf_flow = h5py.File("/tmp/Data/hollywood_features/"+d+"/context_file/"+vid+".h5", 'w')
+            hf_rgb = h5py.File("/tmp/Data/hollywood_features/" +
+                               d+"/data_file/"+vid+".h5", 'w')
+            hf_flow = h5py.File("/tmp/Data/hollywood_features/" +
+                                d+"/context_file/"+vid+".h5", 'w')
             hf_rgb.create_dataset('data_file', data=rgb_features)
             hf_flow.create_dataset('context_file', data=flow_features)
             hf_rgb.close()
@@ -78,6 +81,5 @@ def extract_features(classes,label):
             else:
                 print('.', end='')
         print(item + " class completed")
-    return video_label,video_name
 
-
+    return video_label, video_name
