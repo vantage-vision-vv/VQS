@@ -3,6 +3,8 @@ import h5py
 from collections import Counter
 
 
+d = 'autotrain'
+
 def GetSpacedElements(array, numElems=30):
     if len(array) < numElems:
         return None
@@ -14,7 +16,7 @@ def GetSpacedElements(array, numElems=30):
 
 
 def np_write(d, name):
-    path = '/tmp/Data/virat_input/' + name + '.npy'
+    path = '/tmp/Data/hollywood_input/' + name + '.npy'
     np.save(path, d)
 
 
@@ -23,9 +25,9 @@ def extract_feature(samples, key):
     cnt = 0
     for name in samples:
         name = name.split('\n')[0]
-        M_path = '/tmp/Data/virat_features/context_file/' + \
+        M_path = '/tmp/Data/hollwood_features/'+d+'/context_file/' + \
             str(name) + '.h5'
-        X_path = '/tmp/Data/virat_features/data_file/' + \
+        X_path = '/tmp/Data/hollwood_features/'+d+'/data_file/' + \
             str(name) + '.h5'
         M_file = h5py.File(M_path, 'r')
         X_file = h5py.File(X_path, 'r')

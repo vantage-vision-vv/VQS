@@ -4,13 +4,12 @@ from feature_selection import select_features
 import numpy as np
 from pathlib import Path
 
-
-data_dir = '/home/user/Downloads/Hollywood2/AVIClips/'
+d = 'autotrain'
+data_dir = '/tmp/Hollywood/'+ d + '/'
 classes = os.listdir(data_dir)
-classes.sort()
 
 
-with open("/tmp/Data/virat_features/class_label.txt", "w") as fl:
+with open("/tmp/Data/hollywood_features/" + d + "/class_label.txt", "w") as fl:
     for i in range(len(classes)):
         fl.write(classes[i]+str(i)+"\n")
 
