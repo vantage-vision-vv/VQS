@@ -9,7 +9,7 @@ from keras.applications.vgg16 import preprocess_input
 
 model = VGG16(weights='imagenet', include_top=False)
 
-data_dir = '/tmp/Virat/'
+data_dir = '/home/user/Downloads/Hollywood2/AVIClips/'
 
 def compute_rgb(image):
     image = img_to_array(image)
