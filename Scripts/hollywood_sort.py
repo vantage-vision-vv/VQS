@@ -17,12 +17,12 @@ classes = [
 
 file_path = '/home/user/Downloads/Hollywood2/ClipSets/'
 vid_src = '/home/user/Downloads/Hollywood2/AVIClips/'
-dest_path = '/tmp/Hollywood/'
+dest_path = '/tmp/Hollywood/test/'
 
 for c in classes:
     os.system("mkdir " + dest_path + c)
 
-    path = file_path + c + '_autotrain.txt'
+    path = file_path + c + '_test.txt'
     with open(path, 'r') as myfile:
         vid_list = myfile.readlines()
 
