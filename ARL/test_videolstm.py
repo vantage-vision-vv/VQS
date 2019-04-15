@@ -28,7 +28,11 @@ if __name__ == '__main__':
         #################################
         # test data predictions
         for i in range(len(test)):
-            Z_pass, y_target = data.get_data(test[i])
+            try:
+                Z_pass, y_target = data.get_data(test[i])
+            except Exception:
+                continue
+            
             pred,att_map = sess.run([out,Att_t], feed_dict={Z: Z_pass})
 
             pred_test.append(np.argmax(pred))
