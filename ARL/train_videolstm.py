@@ -37,7 +37,7 @@ if __name__ == '__main__':
         while True:
             # training set
             for i in range(len(train)):
-                Z_pass, y_pass = data.get_train_data(train[i])
+                Z_pass, y_pass = data.get_data(train[i])
                 y_ohe = np.zeros(shape=vlstm.actions)
                 y_ohe[y_pass] = 1
                 _, loss = sess.run([optimizer, cost], feed_dict={
@@ -49,7 +49,7 @@ if __name__ == '__main__':
             epoch_train_loss = epoch_train_loss/len(train)
             # validation error
             for i in range(len(val)):
-                Z_pass, y_pass = data.get_train_data(val[i])
+                Z_pass, y_pass = data.get_data(val[i])
                 y_ohe = np.zeros(shape=vlstm.actions)
                 y_ohe[y_pass] = 1
                 loss = sess.run(cost, feed_dict={
