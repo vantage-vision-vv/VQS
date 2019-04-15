@@ -5,7 +5,7 @@ from sklearn.metrics import classification_report, accuracy_score
 # import appropriate dataset
 import sys
 sys.path.insert(0, 'Utils')
-from data_extractor_crime import Data
+from data_extractor import Data
 
 
 if __name__ == '__main__':
@@ -28,7 +28,7 @@ if __name__ == '__main__':
         #################################
         # test data predictions
         for i in range(len(test)):
-            Z_pass, y_target = data.get_data(test[i])
+            Z_pass, y_target = data.get_test_data(test[i])
             pred,att_map = sess.run([out,Att_t], feed_dict={Z: Z_pass})
 
             pred_test.append(np.argmax(pred))
