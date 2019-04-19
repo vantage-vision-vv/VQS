@@ -9,8 +9,7 @@ from keras.applications.vgg16 import preprocess_input
 
 model = VGG16(weights='imagenet', include_top=False)
 
-d = 'train'
-data_dir = '/tmp/Hollywood/' + d + '/'
+data_dir = "/tmp/hmdb51/hmdb51_org/"
 
 
 def compute_rgb(image):
@@ -68,10 +67,8 @@ def extract_features(classes):
                 initial_frame = image
             video_label.append(label)
             video_name.append(vid)
-            hf_rgb = h5py.File("/tmp/Data/hollywood_features/" +
-                               d+"/data_file/"+vid+".h5", 'w')
-            hf_flow = h5py.File("/tmp/Data/hollywood_features/" +
-                                d+"/context_file/"+vid+".h5", 'w')
+            hf_rgb = h5py.File("/tmp/Data/hmdb_features/data_file/"+vid+".h5", 'w')
+            hf_flow = h5py.File("/tmp/Data/hmdb_features/context_file/"+vid+".h5", 'w')
             hf_rgb.create_dataset('data_file', data=rgb_features)
             hf_flow.create_dataset('context_file', data=flow_features)
             hf_rgb.close()

@@ -4,12 +4,11 @@ from feature_selection import select_features
 import numpy as np
 
 
-d = 'train'
-data_dir = '/tmp/Hollywood/' + d + '/'
+data_dir = '/tmp/hmdb51/hmdb51_org/'
 classes = os.listdir(data_dir)
 
 
-with open("/tmp/Data/hollywood_features/" + d + "/class_label.txt", "w") as fl:
+with open("/tmp/Data/hmdb_features/class_label.txt", "w") as fl:
     for i in range(len(classes)):
         fl.write(classes[i]+str(i)+"\n")
 
