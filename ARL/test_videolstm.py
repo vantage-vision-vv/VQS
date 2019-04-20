@@ -19,7 +19,7 @@ if __name__ == '__main__':
     with tf.Session() as sess:
         #################################
         # load saved model
-        saver = tf.train.import_meta_graph('Models/videolstm_model-42.meta')
+        saver = tf.train.import_meta_graph('Models/HMDB51/videolstm_model-42.meta')
         saver.restore(sess, tf.train.latest_checkpoint('Models/'))
         graph = tf.get_default_graph()
         Z = graph.get_tensor_by_name('input:0')

@@ -74,7 +74,7 @@ if __name__ == '__main__':
                 ################################
                 # save the model
                 saver = tf.train.Saver()
-                saver.save(sess, 'Models/videolstm_model', global_step=42)
+                saver.save(sess, 'Models/HMDB51/videolstm_model', global_step=42)
                 ################################
                 patience_cnt = 0
 
