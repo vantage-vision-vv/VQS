@@ -14,4 +14,4 @@ with open("/tmp/Data/hmdb_features/class_label.txt", "w") as fl:
 
 
 video_label, video_name = extract_features(classes)
-select_features(video_label, video_name)
+select_features(video_name, video_label)

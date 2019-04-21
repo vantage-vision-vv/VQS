@@ -43,4 +43,4 @@ if __name__ == '__main__':
     print('Classification accuracy for test data: ' + str(acc))
     print('Classification report for test data: ')
     print(report)
-    print(att_map)
+    
