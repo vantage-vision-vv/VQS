@@ -20,7 +20,8 @@ if __name__ == '__main__':
 
     tf.get_default_graph()
     data = Data()
-    train, val, _ = data.get_split()
+    train = data.get_split("train")
+    val = data.get_split("val")
 
     # training session
     with tf.Session() as sess:
@@ -38,7 +39,7 @@ if __name__ == '__main__':
             # training set
             for i in range(len(train)):
                 try:
-                    Z_pass, y_pass = data.get_data(train[i])
+                    Z_pass, y_pass = data.get_data(train[i],"train")
                 except Exception:
                     continue
 
@@ -54,7 +55,7 @@ if __name__ == '__main__':
             # validation error
             for i in range(len(val)):
                 try:
-                    Z_pass, y_pass = data.get_data(val[i])
+                    Z_pass, y_pass = data.get_data(val[i],"val")
                 except Exception:
                     continue
                 y_ohe = np.zeros(shape=vlstm.actions)

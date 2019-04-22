@@ -11,7 +11,7 @@ from data_extractor import Data
 if __name__ == '__main__':
 
     data = Data()
-    _, _, test = data.get_split()
+    test = data.get_split("test")
 
     pred_test = []
     y_test = []
@@ -29,7 +29,7 @@ if __name__ == '__main__':
         # test data predictions
         for i in range(len(test)):
             try:
-                Z_pass, y_target = data.get_data(test[i])
+                Z_pass, y_target = data.get_data(test[i],"test")
             except Exception:
                 continue
             

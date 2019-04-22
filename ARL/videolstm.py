@@ -27,7 +27,7 @@ class videolstm(object):
         self.atten_bias = (1, 7, 7, 512)
 
         self.actions = 51  # hmdb51 data
-        self.timesteps = 30
+        self.timesteps = 10
         self.Z = tf.placeholder(tf.float32, shape=(
             self.timesteps, 7, 7, 1024), name='input')
         self.y = tf.placeholder(
