@@ -56,6 +56,7 @@ def extract_feature(samples, key, p):
 
         bb_data = np.array(bb_data)
         print(bb_data.shape)
+        print(start, end)
         index = np.arange(end - start + 1)
         print(index)
         index = GetSpacedElements(index)  # will return list now
