@@ -47,32 +47,32 @@ def extract_features(classes):
         cnt = 0
         for vid in files:
             cnt += 1
-            rgb_features = []
-            flow_features = []
-            cap = cv2.VideoCapture(data_dir+item+"/"+vid)
-            frame_length = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
-            chk, initial_frame = cap.read()
-            if chk is False:
-                continue
-            initial_frame = cv2.resize(
-                initial_frame, (224, 224), interpolation=cv2.INTER_AREA)
-            for i in range(frame_length-1):
-                chk, frame = cap.read()
-                if chk is False:
-                    continue
-                image = cv2.resize(frame, (224, 224),
-                                   interpolation=cv2.INTER_AREA)
-                rgb_features.append(compute_rgb(image))
-                flow_features.append(compute_flow(image, initial_frame))
-                initial_frame = image
+            #rgb_features = []
+            #flow_features = []
+            #cap = cv2.VideoCapture(data_dir+item+"/"+vid)
+            #frame_length = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
+            #chk, initial_frame = cap.read()
+            #if chk is False:
+            #    continue
+            #initial_frame = cv2.resize(
+            #    initial_frame, (224, 224), interpolation=cv2.INTER_AREA)
+            #for i in range(frame_length-1):
+                #chk, frame = cap.read()
+                #if chk is False:
+                #    continue
+                #image = cv2.resize(frame, (224, 224),
+                #                   interpolation=cv2.INTER_AREA)
+                #rgb_features.append(compute_rgb(image))
+                #flow_features.append(compute_flow(image, initial_frame))
+                #initial_frame = image
             video_label.append(label)
             video_name.append(vid)
-            hf_rgb = h5py.File("/tmp/Data/hmdb_features/data_file/"+vid+".h5", 'w')
-            hf_flow = h5py.File("/tmp/Data/hmdb_features/context_file/"+vid+".h5", 'w')
-            hf_rgb.create_dataset('data_file', data=rgb_features)
-            hf_flow.create_dataset('context_file', data=flow_features)
-            hf_rgb.close()
-            hf_flow.close()
+            #hf_rgb = h5py.File("/tmp/Data/hmdb_features/data_file/"+vid+".h5", 'w')
+            #hf_flow = h5py.File("/tmp/Data/hmdb_features/context_file/"+vid+".h5", 'w')
+            #hf_rgb.create_dataset('data_file', data=rgb_features)
+            #hf_flow.create_dataset('context_file', data=flow_features)
+            #hf_rgb.close()
+            #hf_flow.close()
             if cnt % 10 == 0:
                 print(cnt)
             else:
