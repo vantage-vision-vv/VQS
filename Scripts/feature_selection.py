@@ -1,3 +1,4 @@
+
 import numpy as np
 import h5py
 from collections import Counter
@@ -46,17 +47,17 @@ def extract_feature(samples, key, p):
     name_cnt = 0
     for cnt, name in enumerate(samples):
         name = name.split('\n')[0]
-        print(name)
-        M_path = '/tmp/Data/hmdb_features/context_file/' + \
-            str(name) + '.h5'
-        X_path = '/tmp/Data/hmdb_features/data_file/' + \
-            str(name) + '.h5'
-        M_file = h5py.File(M_path, 'r')
-        X_file = h5py.File(X_path, 'r')
-        M = np.array(M_file.get('context_file'))
-        X = np.array(X_file.get('data_file'))
-        M_file.close()
-        X_file.close()
+        #print(name)
+        #M_path = '/tmp/Data/hmdb_features/context_file/' + \
+        #    str(name) + '.h5'
+        #X_path = '/tmp/Data/hmdb_features/data_file/' + \
+        #    str(name) + '.h5'
+        #M_file = h5py.File(M_path, 'r')
+        #X_file = h5py.File(X_path, 'r')
+        #M = np.array(M_file.get('context_file'))
+        #X = np.array(X_file.get('data_file'))
+        #M_file.close()
+        #X_file.close()
 
         bb_file = name.split('.')[0]
         bb_collec,span = slice_bb(bb_file)
@@ -68,20 +69,22 @@ def extract_feature(samples, key, p):
             index = GetSpacedElements(index)  # will return list now
             if index is None:
                 continue
-            print(bb_data.shape)
-            print(span)
+            #print(bb_data.shape)
+            #print(span)
             bb_data = bb_data[index, :]
             index += item[0]
-            M_new = M[index, :]
-            X_new = X[index, :]
+            #M_new = M[index, :]
+            #X_new = X[index, :]
             for i in range(index.shape[0]):
                 name_cnt += 1  # for naming purpose
-                M_temp = M_new[i, :].reshape((10, 512, 7, 7))
-                X_temp = X_new[i, :].reshape((10, 512, 7, 7))
-                Z_temp = np.hstack((M_temp, X_temp))
-                data = [Z_temp, key[cnt], bb_data[i]]
+                #M_temp = M_new[i, :].reshape((10, 512, 7, 7))
+                #X_temp = X_new[i, :].reshape((10, 512, 7, 7))
+                #Z_temp = np.hstack((M_temp, X_temp))
+                #data = [Z_temp, key[cnt], bb_data[i]]
                 name = str(key[cnt])+'_'+str(name_cnt)
-                np_write(data, name, p)
+                #np_write(data, name, p)
+                with open("./map_"+p+".txt","a") as f:
+                    f.write(bb_file + " "+ name + " " + ",".join(str(e) for e in index[i])+"\n")
 
 
 def select_features(X, y):
