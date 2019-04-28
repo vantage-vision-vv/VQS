@@ -5,7 +5,7 @@ import numpy as np
 # import appropriate dataset
 import sys
 sys.path.insert(0, 'Utils')
-from data_extractor import Data
+from data_extractor_hmdb import Data
 
 
 if __name__ == '__main__':
@@ -32,7 +32,6 @@ if __name__ == '__main__':
         patience_cnt = 0
         epoch_val_loss = 0
         epoch_train_loss = 0
-        epoch_train_loss_prev = 0
         min_epoch_val_loss = 1e+10
 
         while True:
@@ -52,7 +51,8 @@ if __name__ == '__main__':
                 epoch_train_loss += loss
             epoch += 1
             epoch_train_loss = epoch_train_loss/len(train)
-            # validation error
+            
+            # validation set
             for i in range(len(val)):
                 try:
                     Z_pass, y_pass = data.get_data(val[i],"val")
@@ -86,6 +86,5 @@ if __name__ == '__main__':
             if epoch == 1000 or patience_cnt == patience:
                 break
 
-            epoch_train_loss_prev = epoch_train_loss
             epoch_train_loss = 0
             epoch_val_loss = 0
