@@ -77,7 +77,7 @@ if __name__ == '__main__':
             if epoch % 1000 == 0:
                 # save the model
                 saver = tf.train.Saver()
-                saver.save(sess, 'Models/HMDB51/videolstm_model', global_step=42)
+                saver.save(sess, 'Models/SegNet/segnet_model', global_step=42)
                 # print present stats
                 print('Epoch: '+str(epoch)+'; Training Error: ' +
                       str(epoch_train_loss)+'; Validation Error: '+str(epoch_val_loss))
