@@ -250,4 +250,7 @@ class segnet(object):
 
     def batch_norm(self, bias_input, is_training, scope):
         with tf.variable_scope(scope.name) as scope:
-            return tf.cond(is_training, lambda: tf.contrib.layers.batch_norm(bias_input, is_training=True, center=False, scope=scope), lambda: tf.contrib.layers.batch_norm(bias_input, is_training=False, center=False, reuse=True, scope=scope))
+            return tf.cond(is_training,
+                           lambda: tf.contrib.layers.batch_norm(
+                               bias_input, is_training=True, center=False, scope=scope),
+                           lambda: tf.contrib.layers.batch_norm(bias_input, is_training=False, center=False, reuse=True, scope=scope))
