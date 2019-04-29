@@ -23,6 +23,6 @@ if __name__ == '__main__':
             'Models/SegNet/segnet_model-42.meta')
         saver.restore(sess, tf.train.latest_checkpoint('Models/SegNet/'))
         graph = tf.get_default_graph()
-        
+
         #################################
         # test data predictions
