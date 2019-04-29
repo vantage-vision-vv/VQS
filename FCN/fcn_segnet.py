@@ -19,6 +19,8 @@ class segnet(object):
         self.vgg_param_dict = None
         self.batch_size = 1
 
+        self.forward()
+
     def forward(self):
         self.inputs_pl = tf.placeholder(
             tf.float32, [None, self.image_height, self.image_weight, self.image_channel], name="input")
@@ -166,8 +168,6 @@ class segnet(object):
                                                           shape=[self.num_classes], wd=False)
             #self.logits = tf.nn.bias_add(self.conv, self.biases, name=scope.name)
             self.logits = tf.nn.bias_add(self.conv, self.biases, name="output")
-
-        return self.logits
 
     def max_pool(self, inputs, name):
         with tf.variable_scope(name) as scope:
