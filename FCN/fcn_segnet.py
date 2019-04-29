@@ -23,10 +23,10 @@ class segnet(object):
 
     def forward(self):
         self.inputs_pl = tf.placeholder(
-            tf.float64, [None, self.image_height, self.image_weight, self.image_channel], name="input")
+            tf.float32, [None, self.image_height, self.image_weight, self.image_channel], name="input")
         self.labels_pl = tf.placeholder(
-            tf.float64, [None, self.image_height, self.image_weight, 1])
-        self.att_map_pl = tf.placeholder(tf.float64, [None, 7, 7, 1])
+            tf.float32, [None, self.image_height, self.image_weight, 1])
+        self.att_map_pl = tf.placeholder(tf.float32, [None, 7, 7, 1])
 
         self.norm1 = tf.nn.lrn(self.inputs_pl, depth_radius=5,
                                bias=1.0, alpha=0.0001, beta=0.75, name='norm1')
