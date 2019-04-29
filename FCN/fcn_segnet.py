@@ -17,7 +17,7 @@ class segnet(object):
         self.is_training = True
         self.use_vgg = False
         self.vgg_param_dict = None
-        self.batch_size = 1
+        self.batch_size = 10
 
         self.forward()
 
