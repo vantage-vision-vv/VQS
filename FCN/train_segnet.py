@@ -24,7 +24,7 @@ if __name__ == '__main__':
     fcn = segnet()
 
     cost, accuracy, prediction = cal_cost(
-        logits=fcn.forward(), labels=fcn.labels_pl, number_class=fcn.num_classes)
+        logits=fcn.logits, labels=fcn.labels_pl, number_class=fcn.num_classes)
     optimizer = tf.train.AdamOptimizer(
         learning_rate=fcn.learning_rate).minimize(cost)
 
