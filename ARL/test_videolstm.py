@@ -5,7 +5,7 @@ from sklearn.metrics import classification_report, accuracy_score
 # import appropriate dataset
 import sys
 sys.path.insert(0, 'Utils')
-from data_extractor_hmdb import Data
+from data_extractor_vlstm import Data
 
 
 if __name__ == '__main__':
