@@ -37,11 +37,13 @@ if __name__ == '__main__':
         sess.run(tf.global_variables_initializer())
 
         epoch = 0
+        patience = 5
+        patience_cnt = 0
         epoch_val_loss = 0
         epoch_train_loss = 0
-        max_epochs = 30001
+        min_epoch_val_loss = 1e+10
 
-        while epoch != max_epochs:
+        while True:
             # training set
             for i in range(len(train)):
                 try:
@@ -59,7 +61,7 @@ if __name__ == '__main__':
                 epoch_train_loss += loss
             epoch += 1
             epoch_train_loss = epoch_train_loss/len(train)
-            
+
             # validation set
             for i in range(len(val)):
                 try:
@@ -76,10 +78,25 @@ if __name__ == '__main__':
                 epoch_val_loss += loss
             epoch_val_loss = epoch_val_loss/len(val)
 
-            if epoch % 1000 == 0:
+            # print present stats
+            print('Epoch: '+str(epoch)+'; Training Error: ' +
+                  str(epoch_train_loss)+'; Validation Error: '+str(epoch_val_loss))
+
+            if epoch_val_loss < min_epoch_val_loss:
+                min_epoch_val_loss = epoch_val_loss
+                ################################
                 # save the model
                 saver = tf.train.Saver()
                 saver.save(sess, 'Models/SegNet/segnet_model', global_step=42)
-                # print present stats
-                print('Epoch: '+str(epoch)+'; Training Error: ' +
-                      str(epoch_train_loss)+'; Validation Error: '+str(epoch_val_loss))
+                ################################
+                patience_cnt = 0
+
+            elif epoch_val_loss >= min_epoch_val_loss:
+                patience_cnt += 1
+
+            # break conditions
+            if epoch == 1000 or patience_cnt == patience:
+                break
+
+            epoch_train_loss = 0
+            epoch_val_loss = 0
