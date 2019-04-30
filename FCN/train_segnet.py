@@ -53,7 +53,8 @@ if __name__ == '__main__':
                 _, loss = sess.run([optimizer, cost], feed_dict={
                     fcn.inputs_pl: inputs_pass,
                     fcn.att_map_pl: att_pass,
-                    fcn.labels_pl: label_pass
+                    fcn.labels_pl: label_pass,
+                    fcn.is_training: True
                 })
                 epoch_train_loss += loss
             epoch += 1
@@ -69,7 +70,8 @@ if __name__ == '__main__':
                 loss = sess.run(cost, feed_dict={
                     fcn.inputs_pl: inputs_pass,
                     fcn.att_map_pl: att_pass,
-                    fcn.labels_pl: label_pass
+                    fcn.labels_pl: label_pass,
+                    fcn.is_training: False
                 })
                 epoch_val_loss += loss
             epoch_val_loss = epoch_val_loss/len(val)

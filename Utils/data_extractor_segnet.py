@@ -14,5 +14,7 @@ class Data(object):
         dir = dir + '_attn'
         p = self.path + dir + '/' + n
         data = np.load(p)
-        inp, att, label = data
+        inp = data['arr_0']
+        att = data['arr_1']
+        label = data['arr_2']
         return inp, att, label

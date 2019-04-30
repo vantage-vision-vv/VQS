@@ -36,14 +36,12 @@ def store_attn(p):
             for i in range(length):
                 ret, frame = cap.read()
                 if i in frame_data:
-                    gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+                    gray = cv2.resize(frame,(224,224))
                     img_data.append(gray)
                     label_data.append(get_label_image(
                         input_data[2][len(img_data) - 1]))
             attn_data = run_vlstm(input_data[0])
-            final_data = [np.array(img_data), np.array(
-                attn_data), np.array(label_data)]
-            np.save(data_path + p + "_attn/" + str(cnt) + ".npy", final_data)
+            np.savez(data_path + p + "_attn/" + str(cnt) + ".npy", np.array(img_data).reshape((10,224,224,3)), np.array(attn_data).reshape((10,7,7,1)), np.array(label_data).reshape((10,224,224,1)))
 
 
 with tf.Session() as sess:
@@ -52,6 +50,6 @@ with tf.Session() as sess:
     graph = tf.get_default_graph()
     Z = graph.get_tensor_by_name('input:0')
     Att_t = graph.get_tensor_by_name('attention:0')
-    # store_attn("train")
-    # store_attn("val")
-    store_attn("test")
+    #store_attn("train")
+    store_attn("val")
+    #store_attn("test")

@@ -14,7 +14,6 @@ class segnet(object):
 
         self.dropout_bool = True
         self.keep_rate = 0.6
-        self.is_training = True
         self.use_vgg = False
         self.vgg_param_dict = None
         self.batch_size = 10
@@ -27,7 +26,7 @@ class segnet(object):
         self.labels_pl = tf.placeholder(
             tf.float32, [None, self.image_height, self.image_weight, 1])
         self.att_map_pl = tf.placeholder(tf.float32, [None, 7, 7, 1])
-
+        self.is_training = tf.placeholder(tf.bool)
         self.norm1 = tf.nn.lrn(self.inputs_pl, depth_radius=5,
                                bias=1.0, alpha=0.0001, beta=0.75, name='norm1')
 
@@ -250,7 +249,7 @@ class segnet(object):
 
     def batch_norm(self, bias_input, is_training, scope):
         with tf.variable_scope(scope.name) as scope:
-            return tf.cond(tf.constant(is_training, dtype=tf.bool),
+            return tf.cond(is_training,
                            lambda: tf.contrib.layers.batch_norm(
                                bias_input, is_training=True, center=False, scope=scope),
                            lambda: tf.contrib.layers.batch_norm(bias_input, is_training=False, center=False, reuse=True, scope=scope))
