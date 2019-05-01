@@ -185,7 +185,7 @@ class segnet(object):
                 'biases', initializer=tf.constant_initializer(0.0), shape=shape[3], wd=False)
             tf.summary.histogram(scope.name + "bias", conv_biases)
             bias = tf.nn.bias_add(conv, conv_biases)
-            conv_out = tf.nn.relu(self.batch_norm(bias, is_training, scope))
+            conv_out = tf.math.tanh(self.batch_norm(bias, is_training, scope))
         return conv_out
 
     def up_sampling(self, pool, ind, output_shape, batch_size, name=None):
