@@ -1,6 +1,7 @@
 from fcn_segnet import segnet
 import tensorflow as tf
 import numpy as np
+from matplotlib import pyplot as plt
 
 # import appropriate dataset
 import sys
@@ -20,6 +21,18 @@ def cal_cost(logits, labels, number_class):
     return cross_entropy_mean, accuracy, tf.argmax(logits_reshape, -1)
 
 
+def plot_loss(train_loss, val_loss, epoch_count):
+    x = np.linspace(1, epoch_count, epoch_count)
+    plt.plot(x, train_loss, 'b', label="train")
+    plt.plot(x, val_loss, 'r', label="val")
+
+    plt.xlabel('Epoch')
+    plt.ylabel('Loss')
+    plt.title('Learning Curves')
+    plt.grid(True)
+    plt.show()
+
+
 if __name__ == '__main__':
     fcn = segnet()
 
@@ -36,20 +49,23 @@ if __name__ == '__main__':
     with tf.Session() as sess:
         sess.run(tf.global_variables_initializer())
 
-        epoch = 0
+        epoch = 1
         patience = 5
         patience_cnt = 0
         epoch_val_loss = 0
         epoch_train_loss = 0
         min_epoch_val_loss = 1e+10
+        history = []
 
         while True:
+            error_cnt = 0
             # training set
             for i in range(len(train)):
                 try:
                     inputs_pass, att_pass, label_pass = data.get_data(
                         train[i], "train")
                 except Exception:
+                    error_cnt += 1
                     continue
 
                 _, loss = sess.run([optimizer, cost], feed_dict={
@@ -59,15 +75,16 @@ if __name__ == '__main__':
                     fcn.is_training: True
                 })
                 epoch_train_loss += loss
-            epoch += 1
-            epoch_train_loss = epoch_train_loss/len(train)
+            epoch_train_loss = epoch_train_loss/(len(train)-error_cnt)
 
+            error_cnt = 0
             # validation set
             for i in range(len(val)):
                 try:
                     inputs_pass, att_pass, label_pass = data.get_data(
                         val[i], "val")
                 except Exception:
+                    error_cnt += 1
                     continue
                 loss = sess.run(cost, feed_dict={
                     fcn.inputs_pl: inputs_pass,
@@ -76,8 +93,9 @@ if __name__ == '__main__':
                     fcn.is_training: False
                 })
                 epoch_val_loss += loss
-            epoch_val_loss = epoch_val_loss/len(val)
+            epoch_val_loss = epoch_val_loss/(len(val)-error_cnt)
 
+            history.append([epoch_train_loss, epoch_val_loss])
             # print present stats
             print('Epoch: '+str(epoch)+'; Training Error: ' +
                   str(epoch_train_loss)+'; Validation Error: '+str(epoch_val_loss))
@@ -96,7 +114,10 @@ if __name__ == '__main__':
 
             # break conditions
             if epoch == 1000 or patience_cnt == patience:
+                history = np.array(history)
+                plot_loss(history[:, 0], history[:, 1], epoch)
                 break
 
             epoch_train_loss = 0
             epoch_val_loss = 0
+            epoch += 1
