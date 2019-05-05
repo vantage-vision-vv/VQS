@@ -115,6 +115,7 @@ if __name__ == '__main__':
             # break conditions
             if epoch == 1000 or patience_cnt == patience:
                 history = np.array(history)
+                np.save("./Hist.npy",history)
                 plot_loss(history[:, 0], history[:, 1], epoch)
                 break
 

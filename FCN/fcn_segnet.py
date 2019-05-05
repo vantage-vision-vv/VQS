@@ -1,3 +1,4 @@
+
 import tensorflow as tf
 import numpy as np
 import math
@@ -14,8 +15,9 @@ class segnet(object):
 
         self.dropout_bool = True
         self.keep_rate = 0.6
-        self.use_vgg = False
-        self.vgg_param_dict = None
+        self.use_vgg = True
+        self.vgg_param_dict = np.load("./FCN/vgg16.npy", encoding='latin1').item()
+
         self.batch_size = 10
 
         self.forward()
@@ -175,6 +177,30 @@ class segnet(object):
         return tf.to_float(value), index, inputs.get_shape().as_list()
 
     def conv_layer(self, bottom, name, shape, is_training, use_vgg=False, vgg_param_dict=None):
+        def get_conv_filter(val_name):
+            return vgg_param_dict[val_name][0]
+   
+        def get_biases(val_name):
+            return vgg_param_dict[val_name][1]
+        with tf.variable_scope(name) as scope:
+            if use_vgg:
+                init = tf.constant_initializer(get_conv_filter(scope.name))
+                filt = self.variable_with_weight_decay('weights', initializer=init, shape=shape, wd=False)
+            else:
+                filt = self.variable_with_weight_decay('weights', initializer=self.initialization(shape[0], shape[2]),
+                                              shape=shape, wd=False)
+            conv = tf.nn.conv2d(bottom, filt, [1, 1, 1, 1], padding='SAME')
+            if use_vgg:
+                conv_biases_init = tf.constant_initializer(get_biases(scope.name))
+                conv_biases = self.variable_with_weight_decay('biases_1', initializer=conv_biases_init, shape=shape[3], wd=False)
+            else:
+                conv_biases = self.variable_with_weight_decay('biases', initializer=tf.constant_initializer(0.0),
+                                                     shape=shape[3],
+                                                     wd=False)
+        bias = tf.nn.bias_add(conv, conv_biases)
+        conv_out = tf.nn.tanh(self.batch_norm(bias, is_training, scope))
+        return conv_out
+        '''
         with tf.variable_scope(name) as scope:
             filt = self.variable_with_weight_decay('weights', initializer=self.initialization(
                 shape[0], shape[2]), shape=shape, wd=False)
@@ -187,7 +213,7 @@ class segnet(object):
             bias = tf.nn.bias_add(conv, conv_biases)
             conv_out = tf.math.tanh(self.batch_norm(bias, is_training, scope))
         return conv_out
-
+        '''
     def up_sampling(self, pool, ind, output_shape, batch_size, name=None):
         """
         Unpooling layer after max_pool_with_argmax.
