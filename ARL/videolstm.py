@@ -3,7 +3,6 @@ from tensorflow.nn import conv2d as conv
 from tensorflow.math import sigmoid as sig
 from tensorflow.math import tanh as tanh
 from tensorflow.math import multiply as mul
-from tensorflow.math import exp as exp
 import numpy as np
 
 
@@ -174,7 +173,9 @@ class videolstm(object):
                         conv(H_first_t, self.W_inter_ha, padding='SAME', strides=[1, 1, 1, 1])),
                     self.b_inter_a)),
             self.W_inter_z, padding='SAME', strides=[1, 1, 1, 1])
-        A_t = exp(Z_t)/np.sum(exp(Z_t))
+        #A_t = exp(Z_t)/np.sum(exp(Z_t))
+        A_t = tf.reshape(tf.math.softmax(
+            tf.reshape(Z_t, [-1])), shape=tf.shape(Z_t))
         X_tilda_t = mul(A_t, X_t)
 
         # second appearance layer
@@ -231,7 +232,7 @@ class videolstm(object):
             self.clstm_forward, Z, initializer=initial_states)
 
         fc_input = tf.reshape(output_states[2][-1], [1, -1])
-        Att_temp = tf.identity(output_states[-1],name='attention')
+        Att_temp = tf.identity(output_states[-1], name='attention')
         temp_1 = tf.layers.dense(fc_input, 1024, activation="tanh")
         temp_2 = tf.layers.dropout(temp_1, rate=0.7)
         out = tf.layers.dense(temp_2, self.actions, activation=None)
