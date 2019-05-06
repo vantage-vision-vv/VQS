@@ -5,10 +5,10 @@ import os
 ###############################################################################
 ###### SetUp YOLO
 ################################################################################
-labelsPath = os.path.sep.join(["./yolo-coco/", "coco.names"])
+labelsPath = os.path.sep.join(["Yolo/yolo-coco/", "coco.names"])
 LABELS = open(labelsPath).read().strip().split("\n")
-weightsPath = os.path.sep.join(["./yolo-coco/", "yolov3.weights"])
-configPath = os.path.sep.join(["./yolo-coco/", "yolov3.cfg"])
+weightsPath = os.path.sep.join(["Yolo/yolo-coco/", "yolov3.weights"])
+configPath = os.path.sep.join(["Yolo/yolo-coco/", "yolov3.cfg"])
 net = cv2.dnn.readNetFromDarknet(configPath, weightsPath)
 ln = net.getLayerNames()
 ln = [ln[i[0] - 1] for i in net.getUnconnectedOutLayers()]
