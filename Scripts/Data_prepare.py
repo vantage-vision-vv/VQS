@@ -20,11 +20,13 @@ def extract_frame_data(name, ev_meta):
         if data[0] == ev_meta[1] and "_".join(data[1:-4]) == name and data[-3] == ev_meta[3] and data[-2] == ev_meta[4]:
             vid_name = item
             break
+    '''
     cap = cv2.VideoCapture(video_path+vid_name)
     while(True):
         ret, frame = cap.read()
         frame_data.append(frame)
-    return np.array(frame_data)
+    '''
+    return np.array([vid_name])
 
 
 def extract_object_info(name, object_encoder):
