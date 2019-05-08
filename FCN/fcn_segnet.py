@@ -16,7 +16,8 @@ class segnet(object):
         self.dropout_bool = True
         self.keep_rate = 0.6
         self.use_vgg = True
-        self.vgg_param_dict = np.load("./FCN/vgg16.npy", encoding='latin1').item()
+        self.vgg_param_dict = np.load(
+            "./FCN/vgg16.npy", encoding='latin1').item()
 
         self.batch_size = 10
 
@@ -53,10 +54,12 @@ class segnet(object):
             3, 3, 128, 256], self.is_training, self.use_vgg, self.vgg_param_dict)
         self.conv3_2 = self.conv_layer(self.conv3_1, "conv3_2", [
             3, 3, 256, 256], self.is_training, self.use_vgg, self.vgg_param_dict)
-        self.conv3_3 = self.conv_layer(self.conv3_2, "conv3_3", [
-            3, 3, 256, 256], self.is_training, self.use_vgg, self.vgg_param_dict)
+        # self.conv3_3 = self.conv_layer(self.conv3_2, "conv3_3", [
+        #    3, 3, 256, 256], self.is_training, self.use_vgg, self.vgg_param_dict)
+        # self.pool3, self.pool3_index, self.shape_3 = self.max_pool(
+        #    self.conv3_3, 'pool3')
         self.pool3, self.pool3_index, self.shape_3 = self.max_pool(
-            self.conv3_3, 'pool3')
+            self.conv3_2, 'pool3')
 
         # Fourth box of convolution layer(10)
         if self.bayes:
@@ -69,10 +72,12 @@ class segnet(object):
                 3, 3, 256, 512], self.is_training, self.use_vgg, self.vgg_param_dict)
         self.conv4_2 = self.conv_layer(self.conv4_1, "conv4_2", [
             3, 3, 512, 512], self.is_training, self.use_vgg, self.vgg_param_dict)
-        self.conv4_3 = self.conv_layer(self.conv4_2, "conv4_3", [
-            3, 3, 512, 512], self.is_training, self.use_vgg, self.vgg_param_dict)
+        # self.conv4_3 = self.conv_layer(self.conv4_2, "conv4_3", [
+        #    3, 3, 512, 512], self.is_training, self.use_vgg, self.vgg_param_dict)
+        # self.pool4, self.pool4_index, self.shape_4 = self.max_pool(
+        #    self.conv4_3, 'pool4')
         self.pool4, self.pool4_index, self.shape_4 = self.max_pool(
-            self.conv4_3, 'pool4')
+            self.conv4_2, 'pool4')
 
         # Fifth box of convolution layers(13)
         if self.bayes:
@@ -85,10 +90,12 @@ class segnet(object):
                 3, 3, 512, 512], self.is_training, self.use_vgg, self.vgg_param_dict)
         self.conv5_2 = self.conv_layer(self.conv5_1, "conv5_2", [
             3, 3, 512, 512], self.is_training, self.use_vgg, self.vgg_param_dict)
-        self.conv5_3 = self.conv_layer(self.conv5_2, "conv5_3", [
-            3, 3, 512, 512], self.is_training, self.use_vgg, self.vgg_param_dict)
+        # self.conv5_3 = self.conv_layer(self.conv5_2, "conv5_3", [
+        #    3, 3, 512, 512], self.is_training, self.use_vgg, self.vgg_param_dict)
+        # self.pool5, self.pool5_index, self.shape_5 = self.max_pool(
+        #    self.conv5_3, 'pool5')
         self.pool5, self.pool5_index, self.shape_5 = self.max_pool(
-            self.conv5_3, 'pool5')
+            self.conv5_2, 'pool5')
 
         # ---------------------So Now the encoder process has been Finished--------------------------------------#
         self.metadata = tf.math.multiply(self.pool5, self.att_map_pl)
@@ -103,9 +110,9 @@ class segnet(object):
         else:
             self.deconv5_1 = self.up_sampling(
                 self.metadata, self.pool5_index, self.shape_5, self.batch_size, name="unpool_5")
-        self.deconv5_2 = self.conv_layer(self.deconv5_1, "deconv5_2", [
-            3, 3, 512, 512], self.is_training)
-        self.deconv5_3 = self.conv_layer(self.deconv5_2, "deconv5_3", [
+        # self.deconv5_2 = self.conv_layer(self.deconv5_1, "deconv5_2", [
+        #    3, 3, 512, 512], self.is_training)
+        self.deconv5_3 = self.conv_layer(self.deconv5_1, "deconv5_3", [
             3, 3, 512, 512], self.is_training)
         self.deconv5_4 = self.conv_layer(self.deconv5_3, "deconv5_4", [
             3, 3, 512, 512], self.is_training)
@@ -118,12 +125,13 @@ class segnet(object):
         else:
             self.deconv4_1 = self.up_sampling(
                 self.deconv5_4, self.pool4_index, self.shape_4, self.batch_size, name="unpool_4")
-        self.deconv4_2 = self.conv_layer(self.deconv4_1, "deconv4_2", [
-            3, 3, 512, 512], self.is_training)
-        self.deconv4_3 = self.conv_layer(self.deconv4_2, "deconv4_3", [
+        # self.deconv4_2 = self.conv_layer(self.deconv4_1, "deconv4_2", [
+        #    3, 3, 512, 512], self.is_training)
+        self.deconv4_3 = self.conv_layer(self.deconv4_1, "deconv4_3", [
             3, 3, 512, 512], self.is_training)
         self.deconv4_4 = self.conv_layer(self.deconv4_3, "deconv4_4", [
             3, 3, 512, 256], self.is_training)
+
         # Third box of deconvolution layers(9)
         if self.bayes:
             self.dropout5 = tf.layers.dropout(self.deconv4_4, rate=(
@@ -133,12 +141,13 @@ class segnet(object):
         else:
             self.deconv3_1 = self.up_sampling(
                 self.deconv4_4, self.pool3_index, self.shape_3, self.batch_size, name="unpool_3")
-        self.deconv3_2 = self.conv_layer(self.deconv3_1, "deconv3_2", [
-            3, 3, 256, 256], self.is_training)
-        self.deconv3_3 = self.conv_layer(self.deconv3_2, "deconv3_3", [
+        # self.deconv3_2 = self.conv_layer(self.deconv3_1, "deconv3_2", [
+        #    3, 3, 256, 256], self.is_training)
+        self.deconv3_3 = self.conv_layer(self.deconv3_1, "deconv3_3", [
             3, 3, 256, 256], self.is_training)
         self.deconv3_4 = self.conv_layer(self.deconv3_3, "deconv3_4", [
             3, 3, 256, 128], self.is_training)
+
         # Fourth box of deconvolution layers(11)
         if self.bayes:
             self.dropout6 = tf.layers.dropout(self.deconv3_4, rate=(
@@ -179,24 +188,27 @@ class segnet(object):
     def conv_layer(self, bottom, name, shape, is_training, use_vgg=False, vgg_param_dict=None):
         def get_conv_filter(val_name):
             return vgg_param_dict[val_name][0]
-   
+
         def get_biases(val_name):
             return vgg_param_dict[val_name][1]
         with tf.variable_scope(name) as scope:
             if use_vgg:
                 init = tf.constant_initializer(get_conv_filter(scope.name))
-                filt = self.variable_with_weight_decay('weights', initializer=init, shape=shape, wd=False)
+                filt = self.variable_with_weight_decay(
+                    'weights', initializer=init, shape=shape, wd=False)
             else:
                 filt = self.variable_with_weight_decay('weights', initializer=self.initialization(shape[0], shape[2]),
-                                              shape=shape, wd=False)
+                                                       shape=shape, wd=False)
             conv = tf.nn.conv2d(bottom, filt, [1, 1, 1, 1], padding='SAME')
             if use_vgg:
-                conv_biases_init = tf.constant_initializer(get_biases(scope.name))
-                conv_biases = self.variable_with_weight_decay('biases_1', initializer=conv_biases_init, shape=shape[3], wd=False)
+                conv_biases_init = tf.constant_initializer(
+                    get_biases(scope.name))
+                conv_biases = self.variable_with_weight_decay(
+                    'biases_1', initializer=conv_biases_init, shape=shape[3], wd=False)
             else:
                 conv_biases = self.variable_with_weight_decay('biases', initializer=tf.constant_initializer(0.0),
-                                                     shape=shape[3],
-                                                     wd=False)
+                                                              shape=shape[3],
+                                                              wd=False)
         bias = tf.nn.bias_add(conv, conv_biases)
         conv_out = tf.nn.tanh(self.batch_norm(bias, is_training, scope))
         return conv_out
@@ -214,6 +226,7 @@ class segnet(object):
             conv_out = tf.math.tanh(self.batch_norm(bias, is_training, scope))
         return conv_out
         '''
+
     def up_sampling(self, pool, ind, output_shape, batch_size, name=None):
         """
         Unpooling layer after max_pool_with_argmax.
