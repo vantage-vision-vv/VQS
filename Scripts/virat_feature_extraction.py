@@ -16,33 +16,43 @@ annotation_path = "/tmp/virat_annotations/"
 max_width = 683
 max_height = 343
 
-def crop_frame(vid_name,frame_no,frame,[width,height]):
+
+def crop_frame(vid_name, frame_no, frame, width, height):
     vid_name = vid_name.split("_")
     ann_file = "_".join(vid_name[1:-4]) + ".viratdata.events.txt"
     bb_data = []
-    with open(annotation_path + ann_file,"r") as f:
+    with open(annotation_path + ann_file, "r") as f:
         for line in f:
             data = line.strip().split(" ")
-            if int(data[3]) == int(vid_name[-3]) and int(data[4]) == int(vid_name[-2]) and int(data[4]) == (int(vid_name[-3]) + frame_no):
-                bb_data = map(int,data[6:])
+            if int(data[3]) == int(vid_name[-3]) and int(data[4]) == int(vid_name[-2]) and int(data[5]) == (int(vid_name[-3]) + frame_no):
+                bb_data = list(map(int, data[6:]))
                 break
-
-    center = [bb_data[0]+bb_data[2]//2,bb_data[1]+bb_data[3]//2]
-    pad_dim = [center[0],center[0],center[1],center[1]]
+    print(bb_data)
+    center = [bb_data[0]+bb_data[2]//2, bb_data[1]+bb_data[3]//2]
+    print(center)
+    pad_dim = [center[0], center[0], center[1], center[1]]
     if (center[0] + max_width//2) > width:
-        pad_dim[0] = center[0] - max_width//2 - (max_width//2 - (width-center[0]))
+        pad_dim[0] = center[0] - max_width//2 - \
+            (max_width//2 - (width-center[0]))
         pad_dim[1] = width
-    if (center[0] - max_width//2) < 0:
+    elif (center[0] - max_width//2) < 0:
         pad_dim[0] = 0
         pad_dim[1] = center[0] + max_width//2 + (max_width//2 - center[0])
+    else:
+        pad_dim[0] = center[0] - max_width//2
+        pad_dim[1] = center[0] + max_width//2
     if (center[1] + max_height//2) > height:
-        pad_dim[2] = center[1] - max_height//2 - (max_height//2 - (height-center[1]))
+        pad_dim[2] = center[1] - max_height//2 - \
+            (max_height//2 - (height-center[1]))
         pad_dim[3] = height
-    if (center[1] - max_height//2) < 0:
+    elif (center[1] - max_height//2) < 0:
         pad_dim[2] = 0
         pad_dim[3] = center[1] + max_height//2 + (max_height//2 - center[1])
-
-    return frame[pad_dim[2]:pad_dim[3],pad_dim[0]:pad_dim[1]]
+    else:
+        pad_dim[2] = center[1] - max_height//2
+        pad_dim[3] = center[1] + max_height//2
+    print(pad_dim)
+    return frame[pad_dim[2]:pad_dim[3], pad_dim[0]:pad_dim[1]]
 
 
 def compute_rgb(image):
@@ -83,14 +93,15 @@ def extract_features(files_name):
         chk, initial_frame = cap.read()
         if chk is False:
             continue
-        initial_frame = crop_frame(item,0,initial_frame,[cap.get(3),cap.get(4)])
+        initial_frame = crop_frame(
+            item, 0, initial_frame, cap.get(3), cap.get(4))
         initial_frame = cv2.resize(
             initial_frame, (224, 224), interpolation=cv2.INTER_AREA)
         for i in range(frame_length-1):
             chk, frame = cap.read()
             if chk is False:
                 continue
-            frame = crop_frame(item,i+1,frame)
+            frame = crop_frame(item, i+1, frame, cap.get(3), cap.get(4))
             image = cv2.resize(frame, (224, 224),
                                interpolation=cv2.INTER_AREA)
             rgb_features.append(compute_rgb(image))
@@ -110,6 +121,5 @@ def extract_features(files_name):
             print(cnt)
         else:
             print('.', end='')
-        
 
     return video_label, video_name
