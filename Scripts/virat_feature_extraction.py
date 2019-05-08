@@ -9,7 +9,7 @@ from keras.applications.vgg16 import preprocess_input
 
 model = VGG16(weights='imagenet', include_top=False)
 
-data_dir = "/home/alpha/Work/Dataset/Virat_Ground/Virat_Trimed/"
+data_dir = "/tmp/Virat_Trimed/"
 
 
 def compute_rgb(image):
@@ -64,9 +64,9 @@ def extract_features(files_name):
         video_label.append(item.split("_")[0])
         video_name.append(item)
         hf_rgb = h5py.File(
-            "/home/alpha/Work/Dataset/Data/virat_input/data_file/"+item+".h5", 'w')
+            "/tmp/Data/virat_input/data_file/"+item+".h5", 'w')
         hf_flow = h5py.File(
-            "/home/alpha/Work/Dataset/Data/virat_input/context_file/"+item+".h5", 'w')
+            "/tmp/Data/virat_input/context_file/"+item+".h5", 'w')
         hf_rgb.create_dataset('data_file', data=rgb_features)
         hf_flow.create_dataset('context_file', data=flow_features)
         hf_rgb.close()

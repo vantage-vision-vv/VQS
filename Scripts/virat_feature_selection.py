@@ -3,7 +3,7 @@ import h5py
 from collections import Counter
 from sklearn.model_selection import train_test_split
 
-bb_path = "/home/alpha/Work/Dataset/Virat_Ground/VIRAT Ground Dataset/annotations/"
+bb_path = "/tmp/virat_annotations/"
 
 
 def GetSpacedElements(array, numElems=10):
@@ -17,16 +17,16 @@ def GetSpacedElements(array, numElems=10):
 
 
 def np_write(data, name, p):
-    path = '/home/alpha/Work/Dataset/Data/virat_input/' + p + '/' + name + '.npy'
+    path = '/tmp/Data/virat_input/' + p + '/' + name + '.npy'
     np.save(path, data)
 
 
 def extract_feature(samples, key, p):
     for cnt, name in enumerate(samples):
         name_cnt = 0
-        M_path = '/home/alpha/Work/Dataset/Data/virat_input/context_file/' + \
+        M_path = '/tmp/Data/virat_input/context_file/' + \
             str(name) + '.h5'
-        X_path = '/home/alpha/Work/Dataset/Data/virat_input/data_file/' + \
+        X_path = '/tmp/Data/virat_input/data_file/' + \
             str(name) + '.h5'
         M_file = h5py.File(M_path, 'r')
         X_file = h5py.File(X_path, 'r')

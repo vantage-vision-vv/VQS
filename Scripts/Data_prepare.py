@@ -2,9 +2,9 @@ import numpy as np
 import os
 import cv2
 
-annotation_path = "/home/alpha/Work/Dataset/Virat_Ground/VIRAT Ground Dataset/annotations/"
-video_path = "/home/alpha/Work/Dataset/Virat_Ground/Virat_Trimed/"
-out_path = "/home/alpha/Work/Dataset/Virat_Ground/ggnn_input/"
+annotation_path = "/tmp/virat_annotations/"
+video_path = "/tmp/Virat_Trimed/"
+out_path = "/tmp/Data/ggnn_input/"
 
 files = os.listdir(annotation_path)
 files = [x.split(".")[0] for x in files]
