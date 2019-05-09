@@ -55,7 +55,7 @@ def extract_feature(samples, key, p):
                 continue
         
         index = np.arange(end - start)
-        if index.shape > M.shape[0]:
+        if index.shape[0] > M.shape[0]:
             print('skip')
             continue
         index = GetSpacedElements(index)  # will return list now
