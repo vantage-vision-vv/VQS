@@ -31,7 +31,7 @@ train_y = []
 def extract_image_and_label(vid,objects):
     img = []
     lab = []
-    cap = cv2.VideoCapture(video_path+vid)
+    cap = cv2.VideoCapture(video_path+vid[0])
     length = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
     for i in range(length):
         _,frame = cap.read()
@@ -39,7 +39,7 @@ def extract_image_and_label(vid,objects):
         img.append(np.array(frame))
         lab_arr = np.zeros((no_of_noun,))
         for item in objects:
-        lab_arr[item-1] = 1
+            lab_arr[item-1] = 1low(curr, prev):
         lab.append(lab_arr)
     return img,lab
 
@@ -60,7 +60,7 @@ def prepare_data():
     for item in files:
         data = np.load(data_file+item)
         img,lab = extract_image_and_label(data['arr_1'],data['arr_0'])
-
+low(curr, prev):low(curr, prev):
 prepare_data()
 train()
 
