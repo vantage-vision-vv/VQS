@@ -6,8 +6,8 @@ from keras import models
 from keras import layers
 from keras import optimizers
 
-data_file = "/home/alpha/Work/Dataset/Virat_Ground/ggnn_input/"
-video_path = "/home/alpha/Work/Dataset/Virat_Ground/Virat_Trimed/"
+data_file = "/tmp/Data/ggnn_input/"
+video_path = "/tmp/Virat_Trimed/"
 
 no_of_verbs = 12
 
