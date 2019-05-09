@@ -17,7 +17,7 @@ max_width = 683
 max_height = 343
 
 
-def crop_frame(vid_name, frame_no, frame, width, height):
+def crop_frame(vid_name, frame_no, frame, width, height,prev_bb):
     vid_name = vid_name.split("_")
     ann_file = "_".join(vid_name[1:-4]) + ".viratdata.events.txt"
     bb_data = []
@@ -27,7 +27,8 @@ def crop_frame(vid_name, frame_no, frame, width, height):
             if int(data[3]) == int(vid_name[-3]) and int(data[4]) == int(vid_name[-2]) and int(data[5]) == (int(vid_name[-3]) + frame_no):
                 bb_data = list(map(int, data[6:]))
                 break
-    print(bb_data)
+    if bb_data == []:
+        return (frame[prev_bb[2]:prev_bb[3], prev_bb[0]:prev_bb[1]],prev_bb)
     center = [bb_data[0]+bb_data[2]//2, bb_data[1]+bb_data[3]//2]
     print(center)
     pad_dim = [center[0], center[0], center[1], center[1]]
@@ -51,8 +52,8 @@ def crop_frame(vid_name, frame_no, frame, width, height):
     else:
         pad_dim[2] = center[1] - max_height//2
         pad_dim[3] = center[1] + max_height//2
-    print(pad_dim)
-    return frame[pad_dim[2]:pad_dim[3], pad_dim[0]:pad_dim[1]]
+    pad_dim = list(map(int,pad_dim))
+    return (frame[pad_dim[2]:pad_dim[3], pad_dim[0]:pad_dim[1]],pad_dim)
 
 
 def compute_rgb(image):
@@ -93,15 +94,15 @@ def extract_features(files_name):
         chk, initial_frame = cap.read()
         if chk is False:
             continue
-        initial_frame = crop_frame(
-            item, 0, initial_frame, cap.get(3), cap.get(4))
+        initial_frame ,prev_bb= crop_frame(
+            item, 0, initial_frame, cap.get(3), cap.get(4),[])
         initial_frame = cv2.resize(
             initial_frame, (224, 224), interpolation=cv2.INTER_AREA)
         for i in range(frame_length-1):
             chk, frame = cap.read()
             if chk is False:
                 continue
-            frame = crop_frame(item, i+1, frame, cap.get(3), cap.get(4))
+            frame, prev_bb = crop_frame(item, i+1, frame, cap.get(3), cap.get(4),prev_bb)
             image = cv2.resize(frame, (224, 224),
                                interpolation=cv2.INTER_AREA)
             rgb_features.append(compute_rgb(image))
