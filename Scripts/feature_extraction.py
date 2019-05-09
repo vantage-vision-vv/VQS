@@ -36,7 +36,7 @@ def compute_flow(curr, prev):
     temp = np.zeros_like(channels[0])
     stack = np.stack(
         [np.array(channels[0]), np.array(channels[1]), temp], axis=-1)
-    return compute_rgb(stack.reshape((224, 224, 3)))
+   return compute_rgb(stack.reshape((224, 224, 3)))
 
 
 def extract_features(classes):

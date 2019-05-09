@@ -46,9 +46,9 @@ def extract_feature(samples, key, p):
                 data = line.strip().split(" ")
                 if key[cnt] == int(data[1]) and int(data[5]) >= start and int(data[5]) <= end:
                     bb_data[int(data[5]) - start] = list(map(int,data[6:]))
-        for cnt, temp in enumerate(bb_data):
+        for bb_cnt, temp in enumerate(bb_data):
             if np.array_equal(temp, np.array([0,0,0,0])):
-                bb_data[cnt] = bb_data[cnt-1]
+                bb_data[bb_cnt] = bb_data[bb_cnt-1]
             else:
                 continue
         index = np.arange(end - start)
@@ -95,7 +95,7 @@ def select_features(X, y):
         X_val.extend(y)
         y_train.extend(z)
         y_val.extend(w)
-
+    print(len(X_train),len(y_train))
     extract_feature(X_train, y_train, 'train')
     extract_feature(X_val, y_val, 'val')
     extract_feature(X_test, y_test, 'test')
