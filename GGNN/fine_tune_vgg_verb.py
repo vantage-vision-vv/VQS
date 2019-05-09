@@ -43,6 +43,7 @@ def extract_image_and_label(vid_batch):
         frame_no = int(vid.split("_")[0])
         vid_name = "_".join(vid.split("_")[1:])
         cap = cv2.VideoCapture(video_path + vid_name)
+<<<<<<< HEAD
         cap.set(cv2.CAP_PROP_POS_FRAMES,frame_no)
         frame = cap.read()
         frame = cv2.resize(frame,(224,224))
@@ -51,6 +52,18 @@ def extract_image_and_label(vid_batch):
         temp_arr[int(vid_name.split("_")[0]) - 1] = 1
         lab.append(temp_arr)
         cap.release()
+=======
+        totalFrames = cap.get(cv2.CAP_PROP_FRAME_COUNT)
+        for i in range(totalFrames):
+            _ , frame = cap.read()
+            if i != frame_no:
+                continue
+            frame = cv2.resize(frame,(224,224))
+            img.append(np.array(frame))
+            temp_arr = np.zeros((no_of_verbs,))
+            temp_arr[int(vid_name.split("_")[0]) - 1] = 1
+            lab.append(temp_arr)
+>>>>>>> 8fbb81fb96b23ce7231d806a2f205ea52d8897bd
     return np.array(img),np.array(lab) 
 
 
@@ -59,7 +72,11 @@ def train():
     batch_generator = MY_Generator(file_names,batch_size,total_samples)
     model.compile(loss='categorical_crossentropy',
                   optimizer=optimizers.RMSprop(lr=1e-4), metrics=['acc'])
+<<<<<<< HEAD
     model.fit_generator(generator=batch_generator,epochs = 1)
+=======
+    model.fit_generator(generator=batch_generator,epochs = 20,)
+>>>>>>> 8fbb81fb96b23ce7231d806a2f205ea52d8897bd
     model_json = model.to_json()
     with open("verb_model.json", "w") as json_file:
         json_file.write(model_json)
@@ -67,17 +84,29 @@ def train():
 
 
 
+<<<<<<< HEAD
 class MY_Generator(Sequence):
+=======
+class MY_Generator():
+>>>>>>> 8fbb81fb96b23ce7231d806a2f205ea52d8897bd
     def __init__(self, file_names, batch_size, total_samples):
         self.file_names=file_names
         self.batch_size=batch_size
         self.total_samples=total_samples
     def __len__(self):
+<<<<<<< HEAD
         return int(np.ceil(self.total_samples/self.batch_size))
+=======
+        return np.ceil(self.total_samples/self.batch_size)
+>>>>>>> 8fbb81fb96b23ce7231d806a2f205ea52d8897bd
     def __getitem__(self, idx):
         files=self.file_names[idx *
             self.batch_size: (idx + 1) * self.batch_size]
         x,y = extract_image_and_label(files)
         return x,y
 
+<<<<<<< HEAD
 train()
+=======
+train()
+>>>>>>> 8fbb81fb96b23ce7231d806a2f205ea52d8897bd
