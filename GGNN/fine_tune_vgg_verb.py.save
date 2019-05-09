@@ -6,7 +6,7 @@ from keras import models
 from keras import layers
 from keras import optimizers
 
-data_file = "/home/alpha/Work/Dataset/Virat_Ground/ggnn_input/"
+/tmp/Data/ggnn_inputdata_file = "/home/alpha/Work/Dataset/Virat_Ground/ggnn_input/"
 video_path = "/home/alpha/Work/Dataset/Virat_Ground/Virat_Trimed/"
 
 no_of_verbs = 12
@@ -70,8 +70,5 @@ def prepare_data():
             img,lab = extract_image_and_label(vid)
             train_x.extend(img)
             train_y.extend(lab)
-
-prepare_data()
-train()
         
 

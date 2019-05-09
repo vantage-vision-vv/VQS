@@ -61,5 +61,7 @@ def prepare_data():
         data = np.load(data_file+item)
         img,lab = extract_image_and_label(data['arr_1'],data['arr_0'])
 
+prepare_data()
+train()
 
 
