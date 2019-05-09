@@ -40,20 +40,23 @@ def extract_feature(samples, key, p):
 
         vid_name = "_".join(name.split("_")[1:-4])
         vid_name += ".viratdata.events.txt"
-        bb_data = []
+        bb_data = np.zeros(((end - start + 1),4))
         with open(bb_path + vid_name, 'r') as f:
             for line in f:
                 data = line.strip().split(" ")
                 if key[cnt] == int(data[1]) and int(data[5]) >= start and int(data[5]) <= end:
-                    bb_data.append(data[6:])
-        index = np.arange(end - start + 1)
-
+                    bb_data[int(data[5]) - start] = list(map(int,data[6:]))
+        for cnt, temp in enumerate(bb_data):
+            if np.array_equal(temp, np.array([0,0,0,0])):
+                bb_data[cnt] = bb_data[cnt-1]
+            else:
+                continue
+        index = np.arange(end - start)
         index = GetSpacedElements(index)  # will return list now
         if index is None:
             continue
-        bb_data = np.array(bb_data)
+        bb_data = bb_data[1:,:]
         bb_data = bb_data[index, :]
-        index += start
         M_new = M[index, :]
         X_new = X[index, :]
         for i in range(index.shape[0]):
@@ -74,7 +77,7 @@ def select_features(X, y):
             temp.append(item)
             data[item.split("_")[0]] = temp
         else:
-            data[item.split("_")[0]][item]
+            data[item.split("_")[0]] = [item]
     X_train = []
     X_test = []
     X_val = []
@@ -82,7 +85,7 @@ def select_features(X, y):
     y_test = []
     y_val = []
     for i in data.keys():
-        y = np.full((data[i],), int(i))
+        y = np.full((len(data.get(i)),), int(i))
         a, b, c, d = train_test_split(
             data[i], y, test_size=0.2, random_state=42)
         X_test.extend(b)
@@ -96,21 +99,3 @@ def select_features(X, y):
     extract_feature(X_train, y_train, 'train')
     extract_feature(X_val, y_val, 'val')
     extract_feature(X_test, y_test, 'test')
-
-    '''
-    for i in range(len(video_labels)):
-        key = video_labels[i]
-        value = video_names[i]
-        if key in vid_dict:
-            temp = vid_dict.get(key)
-            temp.append(value)
-            vid_dict[key] = temp
-        else:
-            vid_dict[key] = [value]
-
-    for key in vid_dict.keys():
-        vid_list = vid_dict.get(key)
-        np.random.shuffle(vid_list)
-        samples = vid_list
-        extract_feature(samples, key)
-    '''
