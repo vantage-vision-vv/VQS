@@ -6,7 +6,7 @@ from sklearn.model_selection import train_test_split
 bb_path = "/tmp/virat_annotations/"
 
 
-def GetSpacedElements(array, numElems=10):
+def GetSpacedElements(array, numElems=30):
     if len(array) < numElems:
         return None
     number_seq = len(array)//numElems
@@ -40,29 +40,36 @@ def extract_feature(samples, key, p):
 
         vid_name = "_".join(name.split("_")[1:-4])
         vid_name += ".viratdata.events.txt"
-        bb_data = np.zeros(((end - start + 1),4))
+        bb_data = np.zeros(((end - start + 1), 4))
+
         with open(bb_path + vid_name, 'r') as f:
             for line in f:
                 data = line.strip().split(" ")
                 if key[cnt] == int(data[1]) and int(data[5]) >= start and int(data[5]) <= end:
-                    bb_data[int(data[5]) - start] = list(map(int,data[6:]))
+                    bb_data[int(data[5]) - start] = list(map(int, data[6:]))
+        
         for bb_cnt, temp in enumerate(bb_data):
-            if np.array_equal(temp, np.array([0,0,0,0])):
+            if np.array_equal(temp, np.array([0, 0, 0, 0])):
                 bb_data[bb_cnt] = bb_data[bb_cnt-1]
             else:
                 continue
+        
         index = np.arange(end - start)
+        if index.shape != M.shape[0]:
+            print('skip')
+            continue
         index = GetSpacedElements(index)  # will return list now
         if index is None:
             continue
-        bb_data = bb_data[1:,:]
+        
+        bb_data = bb_data[1:, :]
         bb_data = bb_data[index, :]
         M_new = M[index, :]
         X_new = X[index, :]
         for i in range(index.shape[0]):
             name_cnt += 1  # for naming purpose
-            M_temp = M_new[i, :].reshape((10, 512, 7, 7))
-            X_temp = X_new[i, :].reshape((10, 512, 7, 7))
+            M_temp = M_new[i, :].reshape((30, 512, 7, 7))
+            X_temp = X_new[i, :].reshape((30, 512, 7, 7))
             Z_temp = np.hstack((M_temp, X_temp))
             data = [Z_temp, key[cnt], bb_data[i]]
             file_name = name + '_'+str(name_cnt)
@@ -95,7 +102,7 @@ def select_features(X, y):
         X_val.extend(y)
         y_train.extend(z)
         y_val.extend(w)
-    print(len(X_train),len(y_train))
+    print(len(X_train), len(y_train))
     extract_feature(X_train, y_train, 'train')
     extract_feature(X_val, y_val, 'val')
     extract_feature(X_test, y_test, 'test')
