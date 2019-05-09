@@ -7,6 +7,7 @@ video_path = "/tmp/Virat_Trimed/"
 out_path = "/tmp/Data/ggnn_input/"
 
 files = os.listdir(annotation_path)
+files = [x for x in files if "mapping" in x]
 files = [x.split(".")[0] for x in files]
 files = list(set(files))
 
