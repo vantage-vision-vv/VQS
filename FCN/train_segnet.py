@@ -69,13 +69,13 @@ if __name__ == '__main__':
                     continue
                 for i in range(30):    
                     _, loss = sess.run([optimizer, cost], feed_dict={
-                        fcn.inputs_pl: inputs_pass[i],
-                        fcn.att_map_pl: att_pass[i],
-                        fcn.labels_pl: label_pass[i],
+                        fcn.inputs_pl: inputs_pass[i:i+1],
+                        fcn.att_map_pl: att_pass[i:i+1],
+                        fcn.labels_pl: label_pass[i:i+1],
                         fcn.is_training: True
                     })
                     epoch_train_loss += loss
-            epoch_train_loss = epoch_train_loss/(len(train)*30 - error_cnt)
+            epoch_train_loss = epoch_train_loss/((len(train)*30 - error_cnt)*30)
 
             error_cnt = 0
             # validation set
@@ -88,13 +88,13 @@ if __name__ == '__main__':
                     continue
                 for i in range(30):
                     loss = sess.run(cost, feed_dict={
-                        fcn.inputs_pl: inputs_pass[i],
-                        fcn.att_map_pl: att_pass[i],
-                        fcn.labels_pl: label_pass[i],
+                        fcn.inputs_pl: inputs_pass[i:i+1],
+                        fcn.att_map_pl: att_pass[i:i+1],
+                        fcn.labels_pl: label_pass[i:i+1],
                         fcn.is_training: False
                     })
                     epoch_val_loss += loss
-            epoch_val_loss = epoch_val_loss/(len(val)*30 - error_cnt)
+            epoch_val_loss = epoch_val_loss/((len(val) - error_cnt)*30)
 
             history.append([epoch_train_loss, epoch_val_loss])
             # print present stats
