@@ -18,9 +18,10 @@ def run_vlstm(inp):
 
 
 def get_label_image(bb, shape):
+    x,y,_ = shape
     bb = list(map(float, bb))
     bb = list(map(int, bb))
-    label = np.zeros(shape)
+    label = np.zeros((x,y))
     label[bb[0]:bb[2]+bb[0], bb[1]:bb[3]+bb[1]] = 1
     return cv2.resize(label, (224, 224))
 
