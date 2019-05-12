@@ -5,7 +5,7 @@ import h5py
 
 vid_path = "/tmp/Virat_Trimed/"
 data_path = "/tmp/Data/virat_input/"
-map_path = "/Data/"
+map_path = "Data/"
 bb_path = "/tmp/Data/virat_input/bb_file/"
 
 
