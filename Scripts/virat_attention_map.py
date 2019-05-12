@@ -12,7 +12,6 @@ bb_path = "/tmp/Data/virat_input/bb_file/"
 def run_vlstm(inp):
     inp = np.swapaxes(inp, 1, 2)
     inp = np.swapaxes(inp, 2, 3)
-    print(inp.shape)
     att_map = sess.run([Att_t], feed_dict={Z: inp})
     return att_map
 
