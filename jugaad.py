@@ -38,10 +38,10 @@ def gen_list(p):
 
 
 def write(p):
-    with open('Data/virat_'+p+'.csv', 'w') as myfile:
+    with open('Data/virat_'+p+'.txt', 'w') as myfile:
         l = gen_list(p)
-        writer = csv.writer(myfile)
-        writer.writerows(l)
+        for i in l:
+            myfile.write(i+'\n')
     return None
 
 if __name__ == "__main__":
