@@ -67,15 +67,15 @@ if __name__ == '__main__':
                 except Exception:
                     error_cnt += 1
                     continue
-
-                _, loss = sess.run([optimizer, cost], feed_dict={
-                    fcn.inputs_pl: inputs_pass,
-                    fcn.att_map_pl: att_pass,
-                    fcn.labels_pl: label_pass,
-                    fcn.is_training: True
-                })
-                epoch_train_loss += loss
-            epoch_train_loss = epoch_train_loss/(len(train)-error_cnt)
+                for i in range(30):    
+                    _, loss = sess.run([optimizer, cost], feed_dict={
+                        fcn.inputs_pl: inputs_pass[i],
+                        fcn.att_map_pl: att_pass[i],
+                        fcn.labels_pl: label_pass[i],
+                        fcn.is_training: True
+                    })
+                    epoch_train_loss += loss
+            epoch_train_loss = epoch_train_loss/(len(train)*30 - error_cnt)
 
             error_cnt = 0
             # validation set
@@ -86,14 +86,15 @@ if __name__ == '__main__':
                 except Exception:
                     error_cnt += 1
                     continue
-                loss = sess.run(cost, feed_dict={
-                    fcn.inputs_pl: inputs_pass,
-                    fcn.att_map_pl: att_pass,
-                    fcn.labels_pl: label_pass,
-                    fcn.is_training: False
-                })
-                epoch_val_loss += loss
-            epoch_val_loss = epoch_val_loss/(len(val)-error_cnt)
+                for i in range(30):
+                    loss = sess.run(cost, feed_dict={
+                        fcn.inputs_pl: inputs_pass[i],
+                        fcn.att_map_pl: att_pass[i],
+                        fcn.labels_pl: label_pass[i],
+                        fcn.is_training: False
+                    })
+                    epoch_val_loss += loss
+            epoch_val_loss = epoch_val_loss/(len(val)*30 - error_cnt)
 
             history.append([epoch_train_loss, epoch_val_loss])
             # print present stats

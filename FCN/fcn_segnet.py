@@ -18,7 +18,7 @@ class segnet(object):
         self.vgg_param_dict = np.load(
             "./FCN/vgg16.npy", encoding='latin1').item()
 
-        self.batch_size = 30
+        self.batch_size = 1
 
         self.forward()
 
