@@ -8,7 +8,7 @@ dir = '/tmp/Data/virat_input/'
 
 def gen_list(p):
     path = dir + p + '/'
-    f = os.listdir(p)
+    f = os.listdir(path)
     data = {}
     for fi in f:
         key = int(fi.split('_')[0])
