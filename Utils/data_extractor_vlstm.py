@@ -7,7 +7,12 @@ class Data(object):
         self.path = '/tmp/Data/virat_input/'
 
     def get_split(self, dir):
-        return os.listdir(self.path+dir)
+        file_path = '/tmp/Data/virat_'+dir+'.txt'
+        tbr = []
+        with open(file_path, 'r') as myfile:
+            for line in myfile:
+                tbr.append(line.strip())
+        return tbr
 
     def get_data(self, n, dir):
         p = self.path + dir + '/' + n
