@@ -4,7 +4,7 @@ import os
 
 class Data(object):
     def __init__(self):
-        self.path = '/tmp/Data/hmdb_input/'
+        self.path = '/tmp/Data/virat_input/'
 
     def get_split(self, dir):
         dir = dir + '_attn'
