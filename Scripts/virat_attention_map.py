@@ -26,7 +26,7 @@ def get_label_image(bb, shape):
 
 
 def store_attn(p):
-    with open(map_path+"map_"+p+".txt", "r") as f:
+    with open(map_path+"map_virat_"+p+".txt", "r") as f:
         for cnt, line in enumerate(f):
             data = line.strip().split(" ")
             vid_name = "_".join(x for x in data[0].split("_")[:-1])
