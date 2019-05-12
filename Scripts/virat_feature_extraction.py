@@ -17,7 +17,7 @@ max_width = 683
 max_height = 343
 
 
-def crop_frame(vid_name, frame_no, frame, width, height,prev_bb):
+def crop_frame(vid_name, frame_no, frame, width, height, prev_bb):
     vid_name = vid_name.split("_")
     ann_file = "_".join(vid_name[1:-4]) + ".viratdata.events.txt"
     bb_data = []
@@ -28,9 +28,8 @@ def crop_frame(vid_name, frame_no, frame, width, height,prev_bb):
                 bb_data = list(map(int, data[6:]))
                 break
     if bb_data == []:
-        return (frame[prev_bb[2]:prev_bb[3], prev_bb[0]:prev_bb[1]],prev_bb)
+        return (frame[prev_bb[2]:prev_bb[3], prev_bb[0]:prev_bb[1]], prev_bb)
     center = [bb_data[0]+bb_data[2]//2, bb_data[1]+bb_data[3]//2]
-    print(center)
     pad_dim = [center[0], center[0], center[1], center[1]]
     if (center[0] + max_width//2) > width:
         pad_dim[0] = center[0] - max_width//2 - \
@@ -52,8 +51,8 @@ def crop_frame(vid_name, frame_no, frame, width, height,prev_bb):
     else:
         pad_dim[2] = center[1] - max_height//2
         pad_dim[3] = center[1] + max_height//2
-    pad_dim = list(map(int,pad_dim))
-    return (frame[pad_dim[2]:pad_dim[3], pad_dim[0]:pad_dim[1]],pad_dim)
+    pad_dim = list(map(int, pad_dim))
+    return (frame[pad_dim[2]:pad_dim[3], pad_dim[0]:pad_dim[1]], pad_dim)
 
 
 def compute_rgb(image):
@@ -89,35 +88,41 @@ def extract_features(files_name):
     for cnt, item in enumerate(files_name):
         rgb_features = []
         flow_features = []
-        #cap = cv2.VideoCapture(data_dir+item)
-        #frame_length = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
-        #chk, initial_frame = cap.read()
-        #if chk is False:
-        #    continue
-        #initial_frame ,prev_bb= crop_frame(
-        #    item, 0, initial_frame, cap.get(3), cap.get(4),[])
-        #initial_frame = cv2.resize(
+        bb_data = []
+        cap = cv2.VideoCapture(data_dir+item)
+        frame_length = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
+        chk, initial_frame = cap.read()
+        if chk is False:
+            continue
+        initial_frame, prev_bb = crop_frame(
+            item, 0, initial_frame, cap.get(3), cap.get(4), [])
+        # initial_frame = cv2.resize(
         #    initial_frame, (224, 224), interpolation=cv2.INTER_AREA)
-        #for i in range(frame_length-1):
-        #    chk, frame = cap.read()
-        #    if chk is False:
-        #        continue
-        #    frame, prev_bb = crop_frame(item, i+1, frame, cap.get(3), cap.get(4),prev_bb)
+        for i in range(frame_length-1):
+            chk, frame = cap.read()
+            if chk is False:
+                continue
+            frame, prev_bb = crop_frame(
+                item, i+1, frame, cap.get(3), cap.get(4), prev_bb)
+            bb_data.append(prev_bb)
         #    image = cv2.resize(frame, (224, 224),
-        #                       interpolation=cv2.INTER_AREA)
+        #                      interpolation=cv2.INTER_AREA)
         #    rgb_features.append(compute_rgb(image))
         #    flow_features.append(compute_flow(image, initial_frame))
         #    initial_frame = image
         video_label.append(item.split("_")[0])
         video_name.append(item)
-        #hf_rgb = h5py.File(
+        # hf_rgb = h5py.File(
         #    "/tmp/Data/virat_input/data_file/"+item+".h5", 'w')
-        #hf_flow = h5py.File(
+        # hf_flow = h5py.File(
         #    "/tmp/Data/virat_input/context_file/"+item+".h5", 'w')
+        hf_bb = h5py.File("/tmp/Data/virat_input/bb_file/"+item+".h5", 'w')
+        hf_bb.create_dataset('bb_file', data=bb_data)
         #hf_rgb.create_dataset('data_file', data=rgb_features)
         #hf_flow.create_dataset('context_file', data=flow_features)
-        #hf_rgb.close()
-        #hf_flow.close()
+        # hf_rgb.close()
+        # hf_flow.close()
+        hf_bb.close()
         if cnt % 50 == 0:
             print(cnt)
         else:

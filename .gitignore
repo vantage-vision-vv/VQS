@@ -2,4 +2,4 @@ Yolo/yolo-coco/
 .vscode/
 Models/
 FCN/vgg16.npy
-Annotator/Videos/
+Data/

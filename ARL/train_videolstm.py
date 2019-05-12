@@ -38,12 +38,12 @@ if __name__ == '__main__':
             # training set
             for i in range(len(train)):
                 try:
-                    Z_pass, y_pass = data.get_data(train[i],"train")
+                    Z_pass, y_pass = data.get_data(train[i], "train")
                 except Exception:
                     continue
 
                 y_ohe = np.zeros(shape=vlstm.actions)
-                y_ohe[y_pass] = 1
+                y_ohe[int(y_pass)-1] = 1
                 _, loss = sess.run([optimizer, cost], feed_dict={
                     vlstm.Z: Z_pass,
                     vlstm.y: y_ohe
@@ -51,15 +51,15 @@ if __name__ == '__main__':
                 epoch_train_loss += loss
             epoch += 1
             epoch_train_loss = epoch_train_loss/len(train)
-            
+
             # validation set
             for i in range(len(val)):
                 try:
-                    Z_pass, y_pass = data.get_data(val[i],"val")
+                    Z_pass, y_pass = data.get_data(val[i], "val")
                 except Exception:
                     continue
                 y_ohe = np.zeros(shape=vlstm.actions)
-                y_ohe[y_pass] = 1
+                y_ohe[int(y_pass)-1] = 1
                 loss = sess.run(cost, feed_dict={
                     vlstm.Z: Z_pass,
                     vlstm.y: y_ohe
@@ -75,7 +75,8 @@ if __name__ == '__main__':
                 ################################
                 # save the model
                 saver = tf.train.Saver()
-                saver.save(sess, 'Models/HMDB51/videolstm_model', global_step=42)
+                saver.save(sess, 'Models/VIRAT/videolstm_model',
+                           global_step=42)
                 ################################
                 patience_cnt = 0
 

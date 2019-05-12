@@ -31,9 +31,10 @@ for item in files:
     vid_name = np.load(data_file+item)['arr_1'][0]
     vid_split = vid_name.split("_")
     no_of_frames = int(vid_split[-2]) - int(vid_split[-3]) + 1
-    total_samples += no_of_frames
     for i in range(no_of_frames):
-        file_names.append(str(i) + "_" + vid_name)
+        if i % 15 == 0:
+            file_names.append(str(i) + "_" + vid_name)
+total_samples = len(file_names)
 
 
 def extract_image_and_label(vid_batch):
@@ -44,7 +45,9 @@ def extract_image_and_label(vid_batch):
         vid_name = "_".join(vid.split("_")[1:])
         cap = cv2.VideoCapture(video_path + vid_name)
         cap.set(cv2.CAP_PROP_POS_FRAMES, frame_no)
-        frame = cap.read()
+        chk, frame = cap.read()
+        if chk == False:
+            frame = np.zeros((224, 224, 3))
         frame = cv2.resize(frame, (224, 224))
         img.append(np.array(frame))
         temp_arr = np.zeros((no_of_verbs,))

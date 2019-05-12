@@ -19,7 +19,8 @@ if __name__ == '__main__':
     with tf.Session() as sess:
         #################################
         # load saved model
-        saver = tf.train.import_meta_graph('Models/HMDB51/videolstm_model-42.meta')
+        saver = tf.train.import_meta_graph(
+            'Models/HMDB51/videolstm_model-42.meta')
         saver.restore(sess, tf.train.latest_checkpoint('Models/HMDB51/'))
         graph = tf.get_default_graph()
         Z = graph.get_tensor_by_name('input:0')
@@ -29,11 +30,11 @@ if __name__ == '__main__':
         # test data predictions
         for i in range(len(test)):
             try:
-                Z_pass, y_target = data.get_data(test[i],"test")
+                Z_pass, y_target = data.get_data(test[i], "test")
             except Exception:
                 continue
-            
-            pred,att_map = sess.run([out,Att_t], feed_dict={Z: Z_pass})
+
+            pred, att_map = sess.run([out, Att_t], feed_dict={Z: Z_pass})
 
             pred_test.append(np.argmax(pred))
             y_test.append(y_target)
@@ -43,4 +44,3 @@ if __name__ == '__main__':
     print('Classification accuracy for test data: ' + str(acc))
     print('Classification report for test data: ')
     print(report)
-    

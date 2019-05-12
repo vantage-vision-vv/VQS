@@ -4,7 +4,7 @@ import os
 
 class Data(object):
     def __init__(self):
-        self.path = '/tmp/Data/hmdb_input/'
+        self.path = '/tmp/Data/virat_input/'
 
     def get_split(self, dir):
         return os.listdir(self.path+dir)
@@ -13,5 +13,5 @@ class Data(object):
         p = self.path + dir + '/' + n
         Z = np.load(p)
         Z, y, _ = Z
-        Z = Z.reshape((10, 7, 7, 1024))
+        Z = Z.reshape((30, 7, 7, 1024))
         return Z, y
