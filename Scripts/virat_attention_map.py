@@ -26,9 +26,15 @@ def get_label_image(bb, shape):
 
 
 def store_attn(p):
+    filter_file = []
+    with open(map_path + "virat_" + p + ".txt",'r') as myfile:
+        for line in myfile:
+            filter_file.append(line.strip())
     with open(map_path+"map_virat_"+p+".txt", "r") as f:
         for cnt, line in enumerate(f):
             data = line.strip().split(" ")
+            if (data[0] + ".npy") not in filter_file:
+                continue
             vid_name = "_".join(x for x in data[0].split("_")[:-1])
             input_data = np.load(data_path + p + "/" + data[0] + ".npy")
             #bb_data = np.load(bb_path + vid_name + ".h5")
