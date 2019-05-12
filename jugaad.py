@@ -38,7 +38,7 @@ def gen_list(p):
 
 
 def write(p):
-    with open('Data/virat_'+p, 'w') as myfile:
+    with open('Data/virat_'+p+'.csv', 'w') as myfile:
         l = gen_list(p)
         writer = csv.writer(myfile)
         writer.writerows(l)
