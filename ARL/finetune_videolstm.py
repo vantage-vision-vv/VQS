@@ -1,4 +1,3 @@
-from data_extractor_vlstm import Data
 import tensorflow as tf
 import numpy as np
 from sklearn.metrics import classification_report, accuracy_score
@@ -7,6 +6,7 @@ from videolstm import videolstm
 # import appropriate dataset
 import sys
 sys.path.insert(0, 'Utils')
+from data_extractor_vlstm import Data
 
 
 if __name__ == '__main__':
