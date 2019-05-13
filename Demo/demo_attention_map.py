@@ -61,7 +61,8 @@ def store_attn():
                     frame = cv2.resize(frame, (224, 224))
                     img_data.append(frame)
                     label_data.append(target)
-            print(np.array(img_data).shape)
+            if len(img_data) != 30:
+                continue
             attn_data = run_vlstm(input_data[0])
             np.savez(out_path + "_attn/" + str(cnt) + ".npy", np.array(img_data).reshape((30, 224, 224, 3)),
                      np.array(attn_data).reshape((30, 7, 7, 1)), np.array(label_data).reshape((30, 224, 224, 1)))
