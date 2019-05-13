@@ -54,7 +54,7 @@ if __name__ == '__main__':
         graph = tf.get_default_graph()
 
         inputs_pl = graph.get_tensor_by_name('input:0')
-        output = graph.get_tensor_by_name('output:0')
+        output = graph.get_tensor_by_name('conv_classifier/output:0')
         att_map_pl = graph.get_tensor_by_name('attention:0')
         is_training = graph.get_tensor_by_name('train_bool:0')
 
