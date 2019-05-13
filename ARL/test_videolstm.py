@@ -37,7 +37,7 @@ if __name__ == '__main__':
             pred = sess.run([out], feed_dict={Z: Z_pass})
 
             pred_test.append(np.argmax(pred))
-            y_test.append(int(y_target)-1)
+            y_test.append(int(y_target))
 
     report = classification_report(y_true=y_test, y_pred=pred_test)
     acc = accuracy_score(y_true=y_test, y_pred=pred_test)
