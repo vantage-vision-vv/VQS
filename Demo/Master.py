@@ -39,7 +39,7 @@ with tf.Session() as sess:
     out = graph.get_tensor_by_name('output:0')
 
     for X_temp in X_demo:
-        pred, att = sess.run(out, feed_dict={Z: X_temp})
+        pred = sess.run(out, feed_dict={Z: X_temp})
         pred_demo.append(np.argmax(pred)+1)
 
 end = time.time()
