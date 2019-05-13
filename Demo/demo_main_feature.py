@@ -1,6 +1,6 @@
 import os
 from demo_feature_extraction import extract_features
-from demo_feature_selection import extract_features
+from demo_feature_selection import extract_feature
 import numpy as np
 
 
