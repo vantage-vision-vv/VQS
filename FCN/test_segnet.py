@@ -23,6 +23,11 @@ if __name__ == '__main__':
             'Models/SegNet/segnet_model-42.meta')
         saver.restore(sess, tf.train.latest_checkpoint('Models/SegNet/'))
         graph = tf.get_default_graph()
+        
+        inputs_pl = graph.get_tensor_by_name('input:0')
+        output = graph.get_tensor_by_name('output:0')
+        att_map_pl = graph.get_tensor_by_name('attention:0')
+        is_training = graph.get_tensor_by_name('train_bool:0')
 
         #################################
         # test data predictions
@@ -34,11 +39,9 @@ if __name__ == '__main__':
                 error_cnt += 1
                 continue
             for i in range(30):
-                loss = sess.run(cost, feed_dict={
-                    fcn.inputs_pl: inputs_pass[i:i+1],
-                    fcn.att_map_pl: att_pass[i:i+1],
-                    fcn.labels_pl: label_pass[i:i+1],
-                    fcn.is_training: False
+                pred = sess.run(output, feed_dict={
+                    inputs_pl: inputs_pass[i:i+1],
+                    att_map_pl: att_pass[i:i+1],
+                    is_training: False
                 })
-                epoch_val_loss += loss
-        epoch_val_loss = epoch_val_loss/((len(val) - error_cnt)*30)
+                

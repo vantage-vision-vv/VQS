@@ -28,7 +28,7 @@ class segnet(object):
         self.labels_pl = tf.placeholder(
             tf.float32, [None, self.image_height, self.image_weight, 1])
         self.att_map_pl = tf.placeholder(tf.float32, [None, 7, 7, 1], name='attention')
-        self.is_training = tf.placeholder(tf.bool)
+        self.is_training = tf.placeholder(tf.bool, name='train_bool')
         self.norm1 = tf.nn.lrn(self.inputs_pl, depth_radius=5,
                                bias=1.0, alpha=0.0001, beta=0.75, name='norm1')
 
