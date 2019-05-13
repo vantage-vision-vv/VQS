@@ -115,10 +115,10 @@ def extract_features(files_name):
         video_name.append(item)
         
         hf_rgb = h5py.File(
-            "/tmp/Data/virat_input/data_file/"+item+".h5", 'w')
+            "Demo/Data/data_file/"+item+".h5", 'w')
         hf_flow = h5py.File(
-            "/tmp/Data/virat_input/context_file/"+item+".h5", 'w')
-        hf_bb = h5py.File("/tmp/Data/virat_input/bb_file/"+item+".h5", 'w')
+            "Demo/Data/context_file/"+item+".h5", 'w')
+        hf_bb = h5py.File("Demo/Data/bb_file/"+item+".h5", 'w')
         
         hf_bb.create_dataset('bb_file', data=bb_data)
         hf_rgb.create_dataset('data_file', data=rgb_features)
