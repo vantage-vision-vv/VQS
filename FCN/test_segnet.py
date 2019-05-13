@@ -1,6 +1,8 @@
 import tensorflow as tf
 import numpy as np
 import cv2
+from sklearn.metrics import average_precision_score
+from collections import Counter
 
 # import appropriate dataset
 import sys
@@ -73,15 +75,20 @@ if __name__ == '__main__':
                     is_training: False
                 })
                 try:
-                    pred = np.array(np.argmax(pred, axis=-1), dtype=np.int8).reshape((224, 224))
-                    target = np.array(label_pass[i], dtype=np.int8).reshape((224, 224))
-                    boxA = getbb(target)
-                    boxB = getbb(pred)
-                    iou = bb_intersection_over_union(boxA, boxB)
-                    if not np.isnan(iou):
-                        iou_score.append(iou)
+                    pred = np.array(np.argmax(pred, axis=-1), dtype=np.int8).reshape((-1))
+                    target = np.array(label_pass[i], dtype=np.int8).reshape((-1))
+                    #boxA = getbb(target)
+                    #boxB = getbb(pred)
+                    #iou = bb_intersection_over_union(boxA, boxB)
+                    #if not np.isnan(iou):
+                    #    iou_score.append(iou)
                     # pred_test.append(np.argmax(pred,axis=-1))
                     # y_test.append(label_pass[i])
+                    temp = abs(pred-target)
+                    c = Counter(temp)
+                    cnt = c.get(0)
+                    loss = cnt/len(temp)
+                    iou_score.append(loss)
                 except:
                     pass
-        print('IOU: ' + str(np.mean(iou_score)))
+        print('map: ' + str(np.mean(iou_score)))
