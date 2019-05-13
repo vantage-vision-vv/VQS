@@ -10,7 +10,6 @@ start = time.time()
 path = 'Demo/Data/input/'
 X_demo = []
 y_demo = []
-att_demo = []
 pred_demo = []
 for fi in os.listdir(path):
     Z = np.load((path + fi))
@@ -30,12 +29,10 @@ with tf.Session() as sess:
     
     Z = graph.get_tensor_by_name('input:0')
     out = graph.get_tensor_by_name('output:0')
-    Att_t = graph.get_tensor_by_name('attention:0')
     
     for X_temp in X_demo:
-        pred, att = sess.run([out, Att_t], feed_dict={Z: X_temp})
+        pred, att = sess.run(out, feed_dict={Z: X_temp})
         pred_demo.append(np.argmax(pred)+1)
-        att_demo.append(att)
-
+        
 end = time.time()
 print('Time Taken: ' + str(round((end-start),2)) +' seconds')    
