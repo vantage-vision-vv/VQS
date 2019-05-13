@@ -73,8 +73,8 @@ if __name__ == '__main__':
                     att_map_pl: att_pass[i:i+1],
                     is_training: False
                 })
-                pred = np.array(np.argmax(pred, axis=-1)).reshape((224, 224))
-                target = np.array(label_pass[i]).reshape((224, 224))
+                pred = np.array(np.argmax(pred, axis=-1)).reshape((224, 224, 1))
+                target = np.array(label_pass[i]).reshape((224, 224, 1))
                 print(pred.shape)
                 print(target.shape)
                 boxA = getbb(target)
