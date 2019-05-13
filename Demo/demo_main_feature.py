@@ -7,4 +7,4 @@ import numpy as np
 vid_dir = 'Demo/trim_videos/'
 vid_files = os.listdir(vid_dir)
 video_label, video_name = extract_features(vid_files)
-extract_features(video_name, video_label)
+extract_feature(video_name, video_label)
