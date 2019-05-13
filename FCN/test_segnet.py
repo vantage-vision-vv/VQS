@@ -83,9 +83,9 @@ if __name__ == '__main__':
                     # y_test.append(label_pass[i])
                     
                     loss = average_precision_score(y_score=pred, y_true=target)
-                    if not np.isnan(iou):
-                        iou_score.append(iou)
-                        
+                    if not np.isnan(loss):
+                        iou_score.append(loss)
+
                 except:
                     pass
         print('map: ' + str(np.mean(iou_score)))
