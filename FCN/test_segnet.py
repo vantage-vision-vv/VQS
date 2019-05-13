@@ -75,6 +75,7 @@ if __name__ == '__main__':
                 })
                 pred = np.array(np.argmax(pred, axis=-1)).reshape((224, 224))
                 target = np.array(label_pass[i]).reshape((224, 224))
+                print(pred)
                 boxA = getbb(target)
                 boxB = getbb(pred)
                 iou = bb_intersection_over_union(boxA, boxB)
