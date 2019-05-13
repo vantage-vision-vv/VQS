@@ -87,10 +87,11 @@ with tf.Session() as sess:
             pred = np.array(np.argmax(pred, axis=-1),
                             dtype=np.int8).reshape((224, 224))
             box = getbb(pred)
-            cv2.rectangle(inputs_pass[i:i+1], (box[0], box[1]),
+            img = np.array(inputs_pass[i:i+1]).reshape((224, 224, 3))
+            cv2.rectangle(img, (box[0], box[1]),
                           (box[0]+box[2], box[1]+box[3]), (255, 0, 0), 2)
             cv2.imwrite('Demo/Data/images/img_'+str(file_cnt) +
-                        '_'+str(name_cnt)+'.png', inputs_pass[i:i+1])
+                        '_'+str(name_cnt)+'.png', img)
             name_cnt += 1
         file_cnt += 1
 end = time.time()
