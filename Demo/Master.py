@@ -18,6 +18,9 @@ for fi in os.listdir(path):
     X_demo.append(x.reshape((30, 7, 7, 1024)))
     y_demo.append(y)   
 
+X_demo = np.array(X_demo).astype('float32')
+y_demo = np.array(y_demo).astype('int')
+
 with tf.Session() as sess:
     # load saved model
     saver = tf.train.import_meta_graph('Models/VIRAT/videolstm_model-42.meta')
