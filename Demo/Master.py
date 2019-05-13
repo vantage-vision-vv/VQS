@@ -5,10 +5,6 @@ import numpy as np
 from sklearn.metrics import classification_report, accuracy_score
 
 
-# read files 
-demo_dir = 'Demo/trim_videos/'
-files = os.listdir(demo_dir)
-
 start = time.time()
 # action classification
 path = 'Demo/Data/input/'
