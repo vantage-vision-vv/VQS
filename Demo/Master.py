@@ -36,9 +36,11 @@ with tf.Session() as sess:
         pred, att = sess.run([out, Att_t], feed_dict={Z: X_temp})
         pred_demo.append(np.argmax(pred)+1)
         att_demo.append(att)
-    
-    report = classification_report(y_true=y_demo, y_pred=pred_demo)
-    acc = accuracy_score(y_true=y_demo, y_pred=pred_demo)
-    print('Classification accuracy for test data: ' + str(acc))
-    print('Classification report for test data: ')
-    print(report)
+
+end = time.time()
+print('Time Taken: ' + str(end-start))    
+report = classification_report(y_true=y_demo, y_pred=pred_demo)
+acc = accuracy_score(y_true=y_demo, y_pred=pred_demo)
+print('Classification accuracy for test data: ' + str(acc))
+print('Classification report for test data: ')
+print(report)
