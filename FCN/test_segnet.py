@@ -11,7 +11,6 @@ from data_extractor_segnet import Data
 def getbb(img):
     nlabels, labels, stats, centroids = cv2.connectedComponentsWithStats(img)
     lblareas = stats[1:, cv2.CC_STAT_AREA]
-    print(np.array(lblareas).shape)
     imax = max(enumerate(lblareas), key=(lambda x: x[1]))[0] + 1
     return [stats[imax, cv2.CC_STAT_LEFT], stats[imax, cv2.CC_STAT_TOP], stats[imax, cv2.CC_STAT_WIDTH], stats[imax, cv2.CC_STAT_HEIGHT]]
 
@@ -73,12 +72,15 @@ if __name__ == '__main__':
                     att_map_pl: att_pass[i:i+1],
                     is_training: False
                 })
-                pred = np.array(np.argmax(pred, axis=-1), dtype=np.int8).reshape((224, 224))
-                target = np.array(label_pass[i], dtype=np.int8).reshape((224, 224))
-                boxA = getbb(target)
-                boxB = getbb(pred)
-                iou = bb_intersection_over_union(boxA, boxB)
-                iou_score.append(iou)
-                # pred_test.append(np.argmax(pred,axis=-1))
-                # y_test.append(label_pass[i])
+                try:
+                    pred = np.array(np.argmax(pred, axis=-1), dtype=np.int8).reshape((224, 224))
+                    target = np.array(label_pass[i], dtype=np.int8).reshape((224, 224))
+                    boxA = getbb(target)
+                    boxB = getbb(pred)
+                    iou = bb_intersection_over_union(boxA, boxB)
+                    iou_score.append(iou)
+                    # pred_test.append(np.argmax(pred,axis=-1))
+                    # y_test.append(label_pass[i])
+                except:
+                    pass
         print('IOU: ' + str(np.mean(iou_score)))
