@@ -3,3 +3,6 @@ Yolo/yolo-coco/
 Models/
 FCN/vgg16.npy
 Data/
+Demo/Data
+Demo/trim_videos
+Demo/VIRAT_S_000101.mp4
