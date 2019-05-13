@@ -12,7 +12,7 @@ def getbb(img):
     imax = max(enumerate(lblareas), key=(lambda x: x[1]))[0] + 1
     return [stats[imax, cv2.CC_STAT_LEFT], stats[imax, cv2.CC_STAT_TOP], stats[imax, cv2.CC_STAT_WIDTH], stats[imax, cv2.CC_STAT_HEIGHT]]
 
-
+'''
 start = time.time()
 # action classification
 path = 'Demo/Data/input/'
@@ -45,6 +45,7 @@ with tf.Session() as sess:
 end = time.time()
 print('Time Taken: ' + str(round((end-start), 2)) + ' seconds')
 ###########################################################################
+'''
 
 start = time.time()
 #action localization
