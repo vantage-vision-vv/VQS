@@ -10,7 +10,7 @@ class segnet(object):
         self.image_weight = 224
         self.image_channel = 3  # check once
         self.bayes = True
-        self.learning_rate = 1e-5  # feed
+        self.learning_rate = 1e-7  # feed
 
         self.dropout_bool = True
         self.keep_rate = 0.6
