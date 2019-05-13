@@ -38,9 +38,4 @@ with tf.Session() as sess:
         att_demo.append(att)
 
 end = time.time()
-print('Time Taken: ' + str(end-start))    
-report = classification_report(y_true=y_demo, y_pred=pred_demo)
-acc = accuracy_score(y_true=y_demo, y_pred=pred_demo)
-print('Classification accuracy for test data: ' + str(acc))
-print('Classification report for test data: ')
-print(report)
+print('Time Taken: ' + str(round((end-start),2)) +' seconds')    

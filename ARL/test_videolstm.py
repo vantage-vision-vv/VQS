@@ -20,8 +20,8 @@ if __name__ == '__main__':
         #################################
         # load saved model
         saver = tf.train.import_meta_graph(
-            'Models/VIRAT/videolstm_model-42.meta')
-        saver.restore(sess, tf.train.latest_checkpoint('Models/VIRAT/'))
+            'Models/HMDB51/videolstm_model-42.meta')
+        saver.restore(sess, tf.train.latest_checkpoint('Models/HMDB51/'))
         graph = tf.get_default_graph()
         Z = graph.get_tensor_by_name('input:0')
         out = graph.get_tensor_by_name('output:0')
