@@ -31,8 +31,6 @@ def store_attn():
     with open(map_path, "r") as f:
         for cnt, line in enumerate(f):
             data = line.strip().split(" ")
-            if (data[0] + ".npy") not in filter_file:
-                continue
             vid_name = "_".join(x for x in data[0].split("_")[:-1])
             input_data = np.load(data_path + data[0] + ".npy")
             #bb_data = np.load(bb_path + vid_name + ".h5")
