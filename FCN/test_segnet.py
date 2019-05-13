@@ -9,7 +9,6 @@ from data_extractor_segnet import Data
 
 
 def getbb(img):
-    _, img = cv2.threshold(img, 0, 1, cv2.THRESH_BINARY)
     nlabels, labels, stats, centroids = cv2.connectedComponentsWithStats(img)
     lblareas = stats[1:, cv2.CC_STAT_AREA]
     imax = max(enumerate(lblareas), key=(lambda x: x[1]))[0] + 1
@@ -75,8 +74,6 @@ if __name__ == '__main__':
                 })
                 pred = np.array(np.argmax(pred, axis=-1), dtype=np.int8).reshape((224, 224))
                 target = np.array(label_pass[i], dtype=np.int8).reshape((224, 224))
-                print(pred.shape)
-                print(target.shape)
                 boxA = getbb(target)
                 boxB = getbb(pred)
                 iou = bb_intersection_over_union(boxA, boxB)
