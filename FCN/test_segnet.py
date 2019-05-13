@@ -11,6 +11,7 @@ from data_extractor_segnet import Data
 def getbb(img):
     nlabels, labels, stats, centroids = cv2.connectedComponentsWithStats(img)
     lblareas = stats[1:, cv2.CC_STAT_AREA]
+    print(np.array(lblareas).shape)
     imax = max(enumerate(lblareas), key=(lambda x: x[1]))[0] + 1
     return [stats[imax, cv2.CC_STAT_LEFT], stats[imax, cv2.CC_STAT_TOP], stats[imax, cv2.CC_STAT_WIDTH], stats[imax, cv2.CC_STAT_HEIGHT]]
 
