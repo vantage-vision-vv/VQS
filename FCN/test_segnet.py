@@ -74,7 +74,7 @@ if __name__ == '__main__':
                     is_training: False
                 })
                 try:
-                    pred = np.array(pred, dtype=np.int8).reshape((-1, 2))
+                    pred = np.array(np.max(pred, axis=-1), dtype=np.int8).reshape((-1))
                     target = np.array(label_pass[i], dtype=np.int8).reshape((-1))
                     #boxA = getbb(target)
                     #boxB = getbb(pred)
