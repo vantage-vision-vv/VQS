@@ -2,7 +2,6 @@ import tensorflow as tf
 import numpy as np
 import cv2
 from sklearn.metrics import average_precision_score
-from collections import Counter
 
 # import appropriate dataset
 import sys
@@ -84,10 +83,8 @@ if __name__ == '__main__':
                     #    iou_score.append(iou)
                     # pred_test.append(np.argmax(pred,axis=-1))
                     # y_test.append(label_pass[i])
-                    temp = abs(pred-target)
-                    c = Counter(temp)
-                    cnt = c.get(0)
-                    loss = cnt/len(temp)
+                    
+                    loss = average_precision_score(y_score=pred, y_true=target)
                     iou_score.append(loss)
                 except:
                     pass
