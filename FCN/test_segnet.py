@@ -9,7 +9,7 @@ from data_extractor_segnet import Data
 
 
 def getbb(img):
-
+    _, img = cv2.threshold(img, 0, 1, cv2.THRESH_BINARY)
     nlabels, labels, stats, centroids = cv2.connectedComponentsWithStats(img)
     lblareas = stats[1:, cv2.CC_STAT_AREA]
     imax = max(enumerate(lblareas), key=(lambda x: x[1]))[0] + 1
