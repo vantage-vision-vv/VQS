@@ -28,11 +28,11 @@ if __name__ == '__main__':
         Z = graph.get_tensor_by_name('input:0')
         out = graph.get_tensor_by_name('output:0')
         y = tf.placeholder(tf.float32, shape=(vlstm.actions))
+        optimizer = graph.get_operation_by_name('Adam:0')
+
 
         cost = tf.losses.softmax_cross_entropy(onehot_labels=y, logits=out)
-        optimizer = tf.train.AdamOptimizer(
-            learning_rate=vlstm.lr).minimize(cost)
-
+        
         epoch = 0
         patience = 5
         patience_cnt = 0
