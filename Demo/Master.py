@@ -2,6 +2,8 @@ import os
 import time
 import tensorflow as tf
 import numpy as np
+from sklearn.metrics import classification_report, accuracy_score
+
 
 # read files 
 demo_dir = 'Demo/trim_videos/'
