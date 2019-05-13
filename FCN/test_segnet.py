@@ -78,7 +78,8 @@ if __name__ == '__main__':
                     boxA = getbb(target)
                     boxB = getbb(pred)
                     iou = bb_intersection_over_union(boxA, boxB)
-                    iou_score.append(iou)
+                    if not np.isnan(iou):
+                        iou_score.append(iou)
                     # pred_test.append(np.argmax(pred,axis=-1))
                     # y_test.append(label_pass[i])
                 except:
