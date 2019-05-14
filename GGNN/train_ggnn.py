@@ -10,6 +10,8 @@ from keras.models import model_from_json, Model
 from keras import backend as K
 import tensorflow as tf
 from GGNN import *
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
+
 
 # Loading Data
 #########################################################################################

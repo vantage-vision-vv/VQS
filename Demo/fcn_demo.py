@@ -3,7 +3,7 @@ import time
 import tensorflow as tf
 import numpy as np
 import cv2
-os.environ['TF_CPP_MIN_LOG_LEVEL'] = 3
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 
 def getbb(img):
     nlabels, labels, stats, centroids = cv2.connectedComponentsWithStats(img)
