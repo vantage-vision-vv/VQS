@@ -18,7 +18,9 @@ os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 data_file = "/home/alpha/Work/Dataset/Virat_Ground/ggnn_input/"
 video_path = "/home/alpha/Work/Dataset/Virat_Ground/Virat_Trimed/"
 out_path = "/home/alpha/Work/Dataset/Virat_Ground/ggnn_data/"
+demo_path = "./Demo/Data/input_attn/"
 
+'''
 file_train = []
 lab_train = []
 file_val = []
@@ -64,7 +66,7 @@ for key in records.keys():
 file_train, lab_train = prepare_data(file_train)
 file_val, lab_val = prepare_data(file_val)
 file_test, lab_test = prepare_data(file_test)
-
+'''
 ##########################################################################################
 # Restoring model
 ##########################################################################################
@@ -224,5 +226,111 @@ def save_data():
                  file_train[index], verb_vec, noun_vec, verb_enc, noun_enc)
 
 
-save_data()
+Verb_map = {
+	1:"loading",
+	2:"Unload",
+	3:"Opening_trunk",
+	4: "Closing_trunk",
+	5: "Getting_into",
+	6: "Getting_out",
+	7: "Gesturing",
+	8: "Digging",
+	9: "Carrying",
+	10: "Running",
+	11: "Entering",
+	12: "Exiting"
+}
+
+Role_map = {
+	1: "Agent",
+	2: "Item",
+	3: "Target",
+	4: "Source",
+	5: "Container",
+	6: "Destination",
+	7: "Origin"
+}
+
+verb_role_map = {
+        1:[1,2,3],
+        2:[1,2,4],
+        3:[1,5],
+        4:[1,5],
+        5:[1,6],
+        6:[1,7],
+        7:[1],
+        8:[1],
+        9:[1,2],
+        10:[1],
+        11:[1],
+        12:[1],
+}
+
+Noun_map = {
+	1:"Person",
+	2: "car",
+	3: "vehicle",
+	4: "object",
+	5: "Bike",
+}
+def use_ggnn():
+    Verb_Node = []
+    Role_Node = []
+    Edge_Node = [] 
+    verb_cnt = 0
+    role_cnt = 0
+    files = os.listdir(demo_path)
+    img_data = []
+    verb_data = []
+    noun_data = []
+    for item in files:
+        data = np.load(demo_path + item)
+        img = data['arr_0'][15].reshape((1,224,224,3))
+        img_data.append(img)
+        verb_data.append(verb_rep.predict(img))
+        noun_data.append(verb_rep.predict(img))
+    with tf.Session() as sess:
+        saver = tf.train.import_meta_graph('./GGNN/-42.meta')
+        saver.restore(sess,tf.train.latest_checkpoint('./GGNN/'))
+        graph = tf.get_default_graph()
+        verb_pl = graph.get_tensor_by_name("verb_pl:0")
+        noun_pl = graph.get_tensor_by_name("noun_pl:0")
+        verb_encoding_pl = graph.get_tensor_by_name("verb_encoding_pl:0")
+        prob_verb = graph.get_tensor_by_name("prob_verb:0")
+        prob_role = {}
+        for i in range(no_of_roles):
+            prob_var_name = "prob_" + str(i) + ":0"
+            prob_role[i] = graph.get_tensor_by_name(prob_var_name)
+        for counter,item in enumerate(files):
+            verb_enc = np.zeros((num_verbs))
+            verb_enc[int(item.split("_")[0]) - 1] = 1
+            verb_enc = verb_enc.reshape((1,12))
+            pred_role = {}
+            pred_verb = sess.run(prob_verb,feed_dict={verb_pl:verb_data[counter],noun_pl:noun_data[counter],verb_encoding_pl:verb_enc})
+            for cnt in range(no_of_roles):
+                pred_role[cnt] = sess.run(prob_role[cnt],feed_dict={verb_pl:verb_data[counter],noun_pl:noun_data[counter],verb_encoding_pl:verb_enc})
+            start = item.split(".")[0].split("_")[-3]
+            end = item.split(".")[0].split("_")[-2]
+            verb_label = Verb_map.get(int(item.split("_")[0])) 
+            Verb_Node.append([verb_cnt,verb_label,start,end])
+            for roles in verb_role_map.get(int(item.split("_")[0])):
+                role_label = Role_map.get(roles)
+                noun_arg = np.argmax(pred_role[roles-1])
+                noun = Noun_map.get(noun_arg+1)
+                Role_Node.append([role_cnt,role_label,noun,verb_label,start,end])
+                Edge_Node.append([verb_cnt,role_cnt])
+                role_cnt += 1
+            verb_cnt += 1
+    with open("verb.csv","w") as f:
+        for item in Verb_Node:
+            f.write(",".join(str(x) for x in item) + "\n")
+    with open("role.csv","w") as f:
+        for item in Role_Node:
+            f.write(",".join(str(x) for x in item) + "\n")
+    with open("edge.csv","w") as f:
+        for item in Edge_Node:
+            f.write(",".join(str(x) for x in item) + "\n")
+
+use_ggnn()
+#save_data()
 # train()
