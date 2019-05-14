@@ -19,8 +19,8 @@ os.system('figlet ..............................')
 ########################################################################################
 os.system('figlet GGNN Started')
 start = time.time()
-end = time.time()
 os.system("python GGNN/train_ggnn.py")
+end = time.time()
 os.system('figlet Time Taken for Completion: ' + str(round((end-start), 2)) + ' seconds')
 os.system('figlet ..............................')
 ########################################################################################
