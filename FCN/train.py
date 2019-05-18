@@ -1,4 +1,4 @@
-from fcn_segnet import segnet
+from fcn-vgg13 import segnet
 import tensorflow as tf
 import numpy as np
 from matplotlib import pyplot as plt
@@ -6,7 +6,7 @@ from matplotlib import pyplot as plt
 # import appropriate dataset
 import sys
 sys.path.insert(0, 'Utils')
-from data_extractor_segnet import Data
+from data_extractor_fcn import Data
 
 
 def cal_cost(logits, labels, number_class):
@@ -106,7 +106,7 @@ if __name__ == '__main__':
                 ################################
                 # save the model
                 saver = tf.train.Saver()
-                saver.save(sess, 'Models/SegNet/segnet_model', global_step=42)
+                saver.save(sess, 'Models/FCN/VIRAT/segnet_model', global_step=42)
                 ################################
                 patience_cnt = 0
 

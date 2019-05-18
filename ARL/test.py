@@ -5,7 +5,7 @@ from sklearn.metrics import classification_report, accuracy_score
 # import appropriate dataset
 import sys
 sys.path.insert(0, 'Utils')
-from data_extractor_vlstm import Data
+from data_extractor_arl import Data
 
 
 if __name__ == '__main__':
@@ -20,8 +20,8 @@ if __name__ == '__main__':
         #################################
         # load saved model
         saver = tf.train.import_meta_graph(
-            'Models/HMDB51/videolstm_model-42.meta')
-        saver.restore(sess, tf.train.latest_checkpoint('Models/HMDB51/'))
+            'Models/ARL/VIRAT/videolstm_model-42.meta')
+        saver.restore(sess, tf.train.latest_checkpoint('Models/ARL/VIRAT/'))
         graph = tf.get_default_graph()
         Z = graph.get_tensor_by_name('input:0')
         out = graph.get_tensor_by_name('output:0')

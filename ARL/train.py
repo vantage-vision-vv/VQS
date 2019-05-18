@@ -5,7 +5,7 @@ import numpy as np
 # import appropriate dataset
 import sys
 sys.path.insert(0, 'Utils')
-from data_extractor_vlstm import Data
+from data_extractor_arl import Data
 
 
 if __name__ == '__main__':
@@ -75,7 +75,7 @@ if __name__ == '__main__':
                 ################################
                 # save the model
                 saver = tf.train.Saver()
-                saver.save(sess, 'Models/VIRAT/videolstm_model',
+                saver.save(sess, 'Models/ARL/VIRAT/videolstm_model',
                            global_step=42)
                 ################################
                 patience_cnt = 0

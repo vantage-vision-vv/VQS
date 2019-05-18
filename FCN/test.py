@@ -49,8 +49,8 @@ if __name__ == '__main__':
         #################################
         # load saved model
         saver = tf.train.import_meta_graph(
-            'Models/SegNet/segnet_model-42.meta')
-        saver.restore(sess, tf.train.latest_checkpoint('Models/SegNet/'))
+            'Models/FCN/VIRAT/segnet_model-42.meta')
+        saver.restore(sess, tf.train.latest_checkpoint('Models/FCN/VIRAT/'))
         graph = tf.get_default_graph()
 
         inputs_pl = graph.get_tensor_by_name('input:0')
@@ -73,7 +73,11 @@ if __name__ == '__main__':
                     att_map_pl: att_pass[i:i+1],
                     is_training: False
                 })
-                try:
+        
+        ###############################################################################
+        #report metric to judge the performance of the model
+        ###############################################################################
+                '''try:
                     pred = np.array(np.max(pred, axis=-1), dtype=np.int8).reshape((-1))
                     target = np.array(label_pass[i], dtype=np.int8).reshape((-1))
                     #boxA = getbb(target)
@@ -87,5 +91,5 @@ if __name__ == '__main__':
                         iou_score.append(loss)
 
                 except:
-                    pass
-        print('map: ' + str(np.mean(iou_score)))
+                    pass'''
+        #print('map: ' + str(np.mean(iou_score)))
