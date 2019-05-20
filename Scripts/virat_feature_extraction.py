@@ -2,12 +2,12 @@ import cv2
 import os
 import numpy as np
 import h5py
-#from keras.preprocessing.image import img_to_array
-#from keras.applications.vgg16 import VGG16
-#from keras.applications.vgg16 import preprocess_input
+from keras.preprocessing.image import img_to_array
+from keras.applications.vgg16 import VGG16
+from keras.applications.vgg16 import preprocess_input
 
 
-#model = VGG16(weights='imagenet', include_top=False)
+model = VGG16(weights='imagenet', include_top=False)
 
 data_dir = "/tmp/Virat_Trimed/"
 
@@ -96,8 +96,8 @@ def extract_features(files_name):
             continue
         initial_frame, prev_bb = crop_frame(
             item, 0, initial_frame, cap.get(3), cap.get(4), [])
-        # initial_frame = cv2.resize(
-        #    initial_frame, (224, 224), interpolation=cv2.INTER_AREA)
+        initial_frame = cv2.resize(
+            initial_frame, (224, 224), interpolation=cv2.INTER_AREA)
         for i in range(frame_length-1):
             chk, frame = cap.read()
             if chk is False:
@@ -105,23 +105,23 @@ def extract_features(files_name):
             frame, prev_bb = crop_frame(
                 item, i+1, frame, cap.get(3), cap.get(4), prev_bb)
             bb_data.append(prev_bb)
-        #    image = cv2.resize(frame, (224, 224),
-        #                      interpolation=cv2.INTER_AREA)
-        #    rgb_features.append(compute_rgb(image))
-        #    flow_features.append(compute_flow(image, initial_frame))
-        #    initial_frame = image
+            image = cv2.resize(frame, (224, 224),
+                              interpolation=cv2.INTER_AREA)
+            rgb_features.append(compute_rgb(image))
+            flow_features.append(compute_flow(image, initial_frame))
+            initial_frame = image
         video_label.append(item.split("_")[0])
         video_name.append(item)
-        # hf_rgb = h5py.File(
-        #    "/tmp/Data/virat_input/data_file/"+item+".h5", 'w')
-        # hf_flow = h5py.File(
-        #    "/tmp/Data/virat_input/context_file/"+item+".h5", 'w')
+        hf_rgb = h5py.File(
+            "/tmp/Data/virat_input/data_file/"+item+".h5", 'w')
+        hf_flow = h5py.File(
+            "/tmp/Data/virat_input/context_file/"+item+".h5", 'w')
         hf_bb = h5py.File("/tmp/Data/virat_input/bb_file/"+item+".h5", 'w')
         hf_bb.create_dataset('bb_file', data=bb_data)
-        #hf_rgb.create_dataset('data_file', data=rgb_features)
-        #hf_flow.create_dataset('context_file', data=flow_features)
-        # hf_rgb.close()
-        # hf_flow.close()
+        hf_rgb.create_dataset('data_file', data=rgb_features)
+        hf_flow.create_dataset('context_file', data=flow_features)
+        hf_rgb.close()
+        hf_flow.close()
         hf_bb.close()
         if cnt % 50 == 0:
             print(cnt)
